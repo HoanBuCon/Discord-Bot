@@ -8,13 +8,20 @@ export class MoveCommand extends Command {
     }
 
     async execute(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): Promise<void> {
-        if (!args || args.length < 2) {
-            await interactionOrMessage.reply({ content: '⚠️ Hãy nhập nước đi theo prefix `69!move x y` hoặc slash `/move x y`', ephemeral: true });
-            return;
+        let x: number;
+        let y: number;
+ 
+        if (interactionOrMessage instanceof Message) {
+            if (!args || args.length < 2) {
+                await interactionOrMessage.reply({ content: '⚠️ Hãy nhập nước đi theo prefix `69!move x y`' });
+                return;
+            }
+            x = parseInt(args[0]);
+            y = parseInt(args[1]);
+        } else {
+            x = interactionOrMessage.options.getInteger('x', true);
+            y = interactionOrMessage.options.getInteger('y', true);
         }
-
-        const x = parseInt(args[0]);
-        const y = parseInt(args[1]);
 
         if (isNaN(x) || isNaN(y) || x < 0 || y < 0) {
             await interactionOrMessage.reply({ content: '🚫 Nước đi không hợp lệ! X và Y phải là số nguyên không âm.', ephemeral: true });
@@ -66,9 +73,9 @@ export class MoveCommand extends Command {
     }
 }
 
-export class EndGameCommand extends Command {
+export class EndTicTacToeCommand extends Command {
     constructor() {
-        super('endgame', 'Dừng ván chơi hiện tại');
+        super('endtictactoe', 'Dừng ván chơi hiện tại');
     }
 
     async execute(interactionOrMessage: ChatInputCommandInteraction | Message): Promise<void> {

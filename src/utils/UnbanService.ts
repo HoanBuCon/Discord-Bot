@@ -86,7 +86,7 @@ export class UnbanService {
                                 allowedMentions: { repliedUser: false }
                             });
                         } else {
-                            await logChannel.send(`✅🔓 ${userId} đã được Unban tự động sau khi hết thời hạn!`);
+                            await logChannel.send(`✅ ${userId} đã được Unban tự động sau khi hết thời hạn! 🔓`);
                         }
                     }
                 } catch (error) {
@@ -105,5 +105,36 @@ export class UnbanService {
                 console.error(`⚠️ Lỗi không xác định khi Unban ${userId} ở server ${guildId}:`, error);
             }
         }
+    }
+
+    static async unbanAllUsersInGuild(client: Client, guildId: string): Promise<void> {
+        const bannedUsers = BanDataManager.getBannedUsers();
+        const guild = client.guilds.cache.get(guildId);
+
+        if (!guild) {
+            console.log(`⚠️ Không tìm thấy server với guildId: ${guildId}`);
+            return;
+        }
+
+        const usersInGuild = bannedUsers ? Object.entries(bannedUsers)
+            .filter(([_, guilds]) => guilds[guildId])
+            .map(([userId, _]) => userId) : [];
+
+        if (usersInGuild.length === 0) {
+            console.log(`🚫 Không có người dùng nào bị Ban trong server ${guild.name}.`);
+            return;
+        }
+
+        for (const userId of usersInGuild) {
+            const banData = bannedUsers[userId][guildId];
+            try {
+                await this.unbanUser(client, userId, guildId, banData, true); // manual: true để tránh gửi thông báo tự động
+                console.log(`✅🔓 Đã Unban ${userId} khỏi server ${guild.name}.`);
+            } catch (error) {
+                console.error(`⚠️ Lỗi khi Unban ${userId} khỏi server ${guildId}:`, error);
+            }
+        }
+
+        console.log(`✅ Đã hoàn tất Unban tất cả (${usersInGuild.length}) người dùng trong server ${guild.name}.`);
     }
 }

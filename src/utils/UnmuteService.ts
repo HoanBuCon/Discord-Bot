@@ -80,7 +80,7 @@ export class UnmuteService {
                                 allowedMentions: { repliedUser: false }
                             });
                         } else {
-                            await logChannel.send(`✅🔊 ${member.user} đã được Unmute tự động sau khi hết thời hạn!`);
+                            await logChannel.send(`✅ ${member.user} đã được Unmute tự động sau khi hết thời hạn! 🔊`);
                         }
                     }
                 } catch (error) {
@@ -90,5 +90,36 @@ export class UnmuteService {
         } catch (error) {
             console.error(`⚠️ Lỗi khi Unmute ${member?.user.tag || userId} ở server ${guildId}:`, error);
         }
+    }
+
+    static async unmuteAllUsersInGuild(client: Client, guildId: string): Promise<void> {
+        const mutedUsers = MuteDataManager.getMutedUsers();
+        const guild = client.guilds.cache.get(guildId);
+
+        if (!guild) {
+            console.log(`⚠️ Không tìm thấy server với guildId: ${guildId}`);
+            return;
+        }
+
+        const usersInGuild = mutedUsers ? Object.entries(mutedUsers)
+            .filter(([_, guilds]) => guilds[guildId])
+            .map(([userId, _]) => userId) : [];
+
+        if (usersInGuild.length === 0) {
+            console.log(`🚫 Không có người dùng nào bị Mute trong server ${guild.name}.`);
+            return;
+        }
+
+        for (const userId of usersInGuild) {
+            const muteData = mutedUsers[userId][guildId];
+            try {
+                await this.unmuteUser(client, userId, guildId, muteData, true);
+                console.log(`✅🔊 Đã Unmute ${userId} khỏi server ${guild.name}.`);
+            } catch (error) {
+                console.error(`⚠️ Lỗi khi Unmute ${userId} khỏi server ${guildId}:`, error);
+            }
+        }
+
+        console.log(`✅ Đã hoàn tất Unmute tất cả (${usersInGuild.length}) người dùng trong server ${guild.name}.`);
     }
 }

@@ -57,7 +57,7 @@ export class DeployCommand {
                 .setDescription('Gỡ ban một người dùng khỏi server')
                 .addStringOption(option =>
                     option.setName('userid')
-                        .setDescription('ID của người dùng bị ban')
+                        .setDescription('ID của người dùng cần unban hoặc "all" để unban tất cả')
                         .setRequired(false)),
 
             new SlashCommandBuilder()
@@ -85,8 +85,8 @@ export class DeployCommand {
                 .setDescription('Gỡ Mute người dùng trong server')
                 .addUserOption(option =>
                     option.setName('user')
-                        .setDescription('Người dùng được unmute')
-                        .setRequired(true)),
+                        .setDescription('Người dùng cần unmute hoặc "all" để unmute tất cả')
+                        .setRequired(false)),
 
             new SlashCommandBuilder()
                 .setName('tictactoe')
@@ -114,6 +114,10 @@ export class DeployCommand {
                     option.setName('y')
                         .setDescription('Tọa độ Y (cột)')
                         .setRequired(true)),
+
+            new SlashCommandBuilder()
+                .setName('endtictactoe')
+                .setDescription('Dừng trận đấu Tic Tac Toe đang diễn ra'),
         ].map(command => command.toJSON());
     }
 

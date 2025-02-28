@@ -11,7 +11,7 @@ import { MuteCommand } from '../commands/botCommands/MuteCommand';
 import { UnmuteCommand } from '../commands/botCommands/UnmuteCommand';
 import { TictactoeCommand } from '../commands/botCommands/TictactoeCommand';
 import { MoveCommand } from '../commands/botCommands/MoveEndCommand';
-import { EndGameCommand } from '../commands/botCommands/MoveEndCommand';
+import { EndTicTacToeCommand } from '../commands/botCommands/MoveEndCommand';
 
 export class CommandHandler {
     private commands: Map<string, ICommand>;
@@ -32,7 +32,7 @@ export class CommandHandler {
         this.registerCommand(new UnmuteCommand());
         this.registerCommand(new TictactoeCommand());
         this.registerCommand(new MoveCommand());
-        this.registerCommand(new EndGameCommand());
+        this.registerCommand(new EndTicTacToeCommand());
     }
 
     registerCommand(command: ICommand, alias?: string): void {

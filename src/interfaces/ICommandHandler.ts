@@ -1,11 +1,13 @@
-import { ChatInputCommandInteraction, Message } from 'discord.js';
-import type { ICommand } from './ICommand';
+// import { ChatInputCommandInteraction, Message } from 'discord.js';
+// import type { ICommand } from './ICommand';
 
-export interface ICommandHandler {
-    registerCommand(command: ICommand): void;
-    handleCommand(
-        interactionOrMessage: ChatInputCommandInteraction | Message,
-        commandName: string,
-        args?: string[]
-    ): Promise<void>;
-}
+// export interface ICommandHandler {
+//     registerCommand(command: ICommand): void;
+//     handleCommand(
+//         interactionOrMessage: ChatInputCommandInteraction | Message,
+//         commandName: string,
+//         args?: string[]
+//     ): Promise<void>;
+// }
+
+// KHONG CAN DUNG DEN GIAO DIEN NAY

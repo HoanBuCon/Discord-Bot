@@ -6,6 +6,7 @@ import { SlashHandler } from './handlers/SlashHandler';
 import { UnmuteService } from './utils/UnmuteService';
 import { UnbanService } from './utils/UnbanService';
 import { DeployCommand } from './utils/DeployCommand';
+import { TictactoeDataManager } from './utils/TictactoeDataManager';
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ client.once('ready', async () => {
     client.user?.setActivity('mẹ bạn', { type: ActivityType.Playing });
     client.user?.setStatus('online');
 
+    TictactoeDataManager.clearAllData();
     await UnbanService.checkAndUnbanUsers(client);
     await UnmuteService.checkAndUnmuteUsers(client);
 });
