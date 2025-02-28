@@ -62,10 +62,17 @@ export class TictactoeCommand extends Command {
         try {
             let replyMessageId: string | null = null;
             let replyChannelId: string | null = interactionOrMessage.channelId ?? null;
-
-            const replyMessage = await interactionOrMessage.reply({ content: `✅ Bắt đầu Minigame Tic Tac Toe!` });
+        
+            let boardSize = 3;
+            if (args && args[1] === "5") {
+                boardSize = 5;
+            }
+        
+            const gameInstance = new TictactoeGameplay(authorPlayer.id, targetPlayer.id, guild.id, interactionOrMessage.id, interactionOrMessage.channelId, boardSize);
+            const initialBoard = gameInstance.getInitialBoard();
+            const replyMessage = await interactionOrMessage.reply({ content: `✅ Bắt đầu Minigame Tic Tac Toe!\n${initialBoard}\nĐến lượt <@${authorPlayer.id}>!` });
+            
             console.log(`✅ Bắt đầu Minigame Tic Tac Toe tại server ${guild.name}`);
-
             if (interactionOrMessage instanceof ChatInputCommandInteraction) {
                 const fetchedReply = await interactionOrMessage.fetchReply();
                 replyMessageId = fetchedReply.id;
@@ -74,18 +81,15 @@ export class TictactoeCommand extends Command {
                 replyMessageId = replyMessage.id;
                 replyChannelId = interactionOrMessage.channel.id;
             }
-
+        
             if (replyMessageId && replyChannelId) {
-                let boardSize = args?.[1] === "5" ? 5 : 3;
-            
                 TictactoeDataManager.saveTictactoeData(authorPlayer.id, targetPlayer.id, guild.id, replyMessageId, replyChannelId, boardSize);
-            
-                const gameInstance = new TictactoeGameplay(authorPlayer.id, targetPlayer.id, guild.id, replyMessageId, replyChannelId, boardSize);
                 TictactoeDataManager.saveGameplayInstance(gameInstance, guild.id);
             }
         } catch (error) {
             console.error(`Lỗi khi bắt đầu Minigame:`, error);
-            await interactionOrMessage.reply({ content: `🚫 Không thể bắt đầu Minigame Tic Tac Toe!` })
+            await interactionOrMessage.reply({ content: `🚫 Không thể bắt đầu Minigame Tic Tac Toe!` });
         }
+        
     }
 }

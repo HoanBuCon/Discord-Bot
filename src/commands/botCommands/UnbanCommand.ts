@@ -11,7 +11,12 @@ export class UnbanCommand extends Command {
     async execute(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): Promise<void> {
         const permissions = new PermissionUtils(interactionOrMessage, args);
         const guild = interactionOrMessage.guild;
-        let member: GuildMember | null = interactionOrMessage instanceof Message ? interactionOrMessage.member : interactionOrMessage.member as GuildMember;
+        let member: GuildMember | null;
+
+        if (interactionOrMessage instanceof Message)
+            member = interactionOrMessage.member;
+        else
+            member = interactionOrMessage.member as GuildMember;
 
         if (!guild || !member) {
             await interactionOrMessage.reply({ content: '🚫 Lệnh này chỉ hoạt động trong server.', ephemeral: true });
@@ -29,13 +34,30 @@ export class UnbanCommand extends Command {
             return;
         }
 
+        let isUnbanAll = false;
+        if (interactionOrMessage instanceof Message && args && args[0] === 'all')
+            isUnbanAll = true;
+        else if (interactionOrMessage instanceof ChatInputCommandInteraction && interactionOrMessage.options.getString('userid') === 'all')
+            isUnbanAll = true;
+
+        if (isUnbanAll) {
+            try {
+                await UnbanService.unbanAllUsersInGuild(interactionOrMessage.client, guild.id);
+                await interactionOrMessage.reply('✅ Đã Unban tất cả người dùng trong server! 🔓');
+                return;
+            } catch (error) {
+                console.error('Lỗi khi unban tất cả:', error);
+                await interactionOrMessage.reply({ content: '⚠️ Lỗi khi thực hiện unban tất cả!', ephemeral: true });
+                return;
+            }
+        }
+
         let userId: string | null = null;
 
-        if (interactionOrMessage instanceof ChatInputCommandInteraction) {
+        if (interactionOrMessage instanceof ChatInputCommandInteraction)
             userId = interactionOrMessage.options.getString('userid', false);
-        } else if (interactionOrMessage instanceof Message && args && args.length > 0) {
+        else if (interactionOrMessage instanceof Message && args && args.length > 0)
             userId = args[0];
-        }
 
         if (!userId) {
             try {
@@ -47,9 +69,15 @@ export class UnbanCommand extends Command {
         
                 const banList = bans.map(ban => `\`${ban.user.tag}\` (ID: **${ban.user.id}**)`).join("\n");
         
+                let description;
+                if (banList.length > 4000)
+                    description = banList.slice(0, 4000) + '...';
+                else
+                    description = banList;
+
                 const embed = new EmbedBuilder()
                     .setTitle('📋 Danh sách thành viên bị Ban')
-                    .setDescription(banList.length > 4000 ? banList.slice(0, 4000) + '...' : banList)
+                    .setDescription(description)
                     .setColor(0xff0000)
                     .setFooter({ text: 'Dùng lệnh sau để gỡ ban:\n🔹Lệnh Slash: /unban <userID>\n🔹Lệnh Prefix: 69!unban <userID>' });
         
