@@ -1,16 +1,9 @@
 import { Client } from 'discord.js';
+import type { MuteData } from '../interfaces/IBaseData';
 import fs from 'fs';
 import path from 'path';
 
 const MUTED_USERS_PATH = path.resolve(__dirname, '../commands/botCommands/dataFiles/commandData/mutedUsers.json');
-
-export interface MuteData {
-    userId: string;
-    guildId: string;
-    unmuteTime: number;
-    messageId?: string;
-    channelId?: string;
-}
 
 export class MuteDataManager {
     static isUserMuted(userId: string, guildId: string): boolean {

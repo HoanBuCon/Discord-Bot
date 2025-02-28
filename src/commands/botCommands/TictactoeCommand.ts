@@ -43,6 +43,16 @@ export class TictactoeCommand extends Command {
             return;
         }
 
+        if (targetPlayer.bot) {
+            await interactionOrMessage.reply({ content: '🚫 Gạ kèo với human đi anh bạn, đồng bọn tôi đêl rảnh!', ephemeral: true});
+            return;
+        }
+
+        if (targetPlayer.id === authorPlayer.id) {
+            await interactionOrMessage.reply({ content: '🚫 Bạn không thể gạ kèo chính mình!', ephemeral: true });
+            return;
+        }
+
         const targetMember = await permissions.getMember(guild, targetPlayer.id);
         if (!targetMember) {
             await interactionOrMessage.reply({ content: '⚠️ Không tìm thấy thành viên!', ephemeral: true });

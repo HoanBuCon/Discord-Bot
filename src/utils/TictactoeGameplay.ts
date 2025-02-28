@@ -24,14 +24,17 @@ export class TictactoeGameplay {
         this.channelId = channelId;
         this.messageId = messageId;
         this.currentPlayer = player1;
-        this.boardSize = boardSize === 5 ? 5 : 3;
+        this.boardSize = 3;
+        if (boardSize === 5) {
+            this.boardSize = 5;
+        }
         this.winCondition = this.boardSize;
         this.board = Array(this.boardSize).fill(null).map(() => Array(this.boardSize).fill(-1));
     }
 
     private renderBoard(): string {
         let display = `\`\`\`\n`;
-        display += '  ' + [...Array(this.boardSize).keys()].join(' ') + '\n';
+        display += '   ' + [...Array(this.boardSize).keys()].join(' ') + '\n';
         this.board.forEach((row, i) => {
             display += `${i} `;
             row.forEach(cell => {
@@ -65,7 +68,11 @@ export class TictactoeGameplay {
     }
 
     switchTurn(): void {
-        this.currentPlayer = this.currentPlayer === this.player1 ? this.player2 : this.player1;
+        if (this.currentPlayer === this.player1)
+            this.currentPlayer = this.player2;
+        else
+            this.currentPlayer = this.player1;
+
         console.log(`🔄 Đến lượt ${this.getCurrentPlayerMention()}`);
     }
 
@@ -78,7 +85,7 @@ export class TictactoeGameplay {
             }
         }
         if (this.board.flat().every(cell => cell !== -1)) {
-            return { ended: true, message: '🥶 Trò chơi hòa!' };
+            return { ended: true, message: '🥶 Kết quả Hòa!' };
         }
         return { ended: false, message: '🔄 Tiếp tục trò chơi' };
     }
