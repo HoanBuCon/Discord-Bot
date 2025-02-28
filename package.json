@@ -1,0 +1,16 @@
+{
+    "name": "discord-saygex69-bot",
+    "module": "index.ts",
+    "type": "module",
+    "devDependencies": {
+      "@types/bun": "latest"
+    },
+    "peerDependencies": {
+      "typescript": "^5.0.0"
+    },
+    "dependencies": {
+      "@libsql/client": "^0.14.0",
+      "discord.js": "^14.17.3",
+      "dotenv": "^16.4.7"
+    }
+  }

@@ -1,0 +1,13 @@
+> **Prefix** của chúng tôi là `69!`
+> Bạn có thể sử dụng **lệnh Prefix** `69!help` hoặc **lệnh Slash** `/help` để xem thông tin chi tiết các lệnh
+# DANH SÁCH CÁC LỆNH:
+> **`/help`**: Hiển thị hướng dẫn sử dụng Bot
+> **`/sua`**: Phản dmg con doggo vừa cắn bạn 🐧
+> **`/memaybeo`**: Dùng khi có thằng chửi mẹ bạn 🐧
+> **`/kick`**: Đuổi thành viên khỏi máy chủ
+> **`/ban`**: Cấm thành viên khỏi máy chủ
+> **`/unban`**: Gỡ lệnh cấm thành viên khỏi máy chủ
+> **`/mute`**: Cấm chat thành viên trong máy chủ
+> **`/unmute`**: Gỡ lệnh cấm chat thành viên trong máy chủ
+> **`/tictactoe`**: Minigame Tic Tac Toe chơi PvP với thành viên trong máy chủ
+> **`/move`**: Lệnh di chuyển đến tọa độ chỉ định trong minigame Tic Tac Toe
