@@ -1,16 +1,9 @@
 import { Client } from 'discord.js';
+import type { BanData } from '../interfaces/IBaseData';
 import fs from 'fs';
 import path from 'path';
 
 const BANNED_USERS_PATH = path.resolve(__dirname, '../commands/botCommands/dataFiles/commandData/bannedUsers.json');
-
-export interface BanData {
-    userId: string;
-    guildId: string;
-    unbanTime: number;
-    messageId?: string;
-    channelId?: string;
-}
 
 export class BanDataManager {
     static isUserBanned(userId: string, guildId: string): boolean {

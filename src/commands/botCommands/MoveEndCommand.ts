@@ -21,9 +21,12 @@ export class MoveCommand extends Command {
             return;
         }
 
-        const playerId = interactionOrMessage instanceof Message
-            ? interactionOrMessage.author.id
-            : interactionOrMessage.user.id;
+        let playerId: string;
+
+        if (interactionOrMessage instanceof Message)
+            playerId = interactionOrMessage.author.id;
+        else
+            playerId = interactionOrMessage.user.id;
 
         const guildId = interactionOrMessage.guild?.id;
         if (!guildId) {

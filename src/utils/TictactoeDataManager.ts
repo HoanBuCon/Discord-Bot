@@ -1,19 +1,10 @@
 import { TictactoeGameplay } from './TictactoeGameplay';
+import type { TictactoeData } from '../interfaces/IBaseData';
 
 import fs from 'fs';
 import path from 'path';
 
 const TICTACTOE_DATA_PATH = path.resolve(__dirname, '../commands/botCommands/dataFiles/commandData/tictactoeData.json');
-
-export interface TictactoeData {
-    userId1: string;
-    userId2: string;
-    guildId: string;
-    messageId?: string;
-    channelId?: string;
-    boardSize: number;
-    status: boolean;
-}
 
 export class TictactoeDataManager {
     private static activeGames: Map<string, TictactoeGameplay> = new Map();
