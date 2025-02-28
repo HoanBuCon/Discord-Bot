@@ -70,7 +70,7 @@ export class BanCommand extends Command {
             let replyMessageId: string | null = null;
             let replyChannelId: string | null = interactionOrMessage.channelId ?? null;
 
-            const replyMessage = await interactionOrMessage.reply({ content: `✅ Đã Ban ${targetUser} trong **${duration}** phút! 🔨` });
+            const replyMessage = await interactionOrMessage.reply({ content: `✅ Đã Ban ${targetUser} trong **${duration}** phút! 🔒` });
             console.log(`✅ Đã Ban ${targetUser.tag} tại server ${guild.name}`);
 
             if (interactionOrMessage instanceof ChatInputCommandInteraction) {

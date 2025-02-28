@@ -1,7 +1,8 @@
-import { ChatInputCommandInteraction, Message, PermissionsBitField, Guild, GuildMember, Client, Role } from 'discord.js';
+import { ChatInputCommandInteraction, Message, PermissionsBitField, Guild, GuildMember, Client, Role, EmbedBuilder } from 'discord.js';
 import { Command } from '../Command';
 import { PermissionUtils } from '../../utils/PermissionUtils';
 import { UnmuteService } from '../../utils/UnmuteService';
+import { MuteDataManager } from '../../utils/MuteDataManager';
 import fs from 'fs';
 import path from 'path';
 
@@ -37,13 +38,79 @@ export class UnmuteCommand extends Command {
             return;
         }
 
-        const targetUser = permissions.getMentionedUser(interactionOrMessage, args, true);
-        if (!targetUser) {
-            await interactionOrMessage.reply({ content: '⚠️ Hãy chỉ định một thành viên!', ephemeral: true });
-            return;
+        let isUnmuteAll = false;
+        if (interactionOrMessage instanceof Message && args && args[0] === 'all')
+            isUnmuteAll = true;
+        else if (interactionOrMessage instanceof ChatInputCommandInteraction && interactionOrMessage.options.getString('user') === 'all')
+            isUnmuteAll = true;
+
+        if (isUnmuteAll) {
+            try {
+                await UnmuteService.unmuteAllUsersInGuild(interactionOrMessage.client, guild.id);
+                await interactionOrMessage.reply('✅ Đã Unmute tất cả người dùng trong server! 🔊');
+                return;
+            } catch (error) {
+                console.error('Lỗi khi unmute tất cả:', error);
+                await interactionOrMessage.reply({ content: '⚠️ Lỗi khi thực hiện unmute tất cả!', ephemeral: true });
+                return;
+            }
         }
 
-        if (targetUser.id === interactionOrMessage.client.user?.id) {
+        const targetUser = permissions.getMentionedUser(interactionOrMessage, args, true);
+
+        if (!targetUser) {
+            try {
+                const mutedUsers = MuteDataManager.getMutedUsers();
+                let guildMutedUsers: string[] = [];
+                
+                if (mutedUsers) {
+                    guildMutedUsers = Object.entries(mutedUsers)
+                        .filter(([_, guilds]) => guilds[guild.id])
+                        .map(([userId, _]) => userId);
+                }
+
+                if (guildMutedUsers.length === 0) {
+                    await interactionOrMessage.reply({ content: '⚠️ Hiện tại không có ai bị Mute trong server này!', ephemeral: true });
+                    return;
+                }
+
+                const muteList = await Promise.all(guildMutedUsers.map(async (userId) => {
+                    const member = await guild.members.fetch(userId).catch(() => null);
+                    let response;
+                
+                    if (member)
+                        response = `<@${userId}> (\`${member.user.tag}\`)`;
+                    else
+                        response = `(Không còn trong server) (ID: **${userId}**)`;
+                
+                    return response;
+                }));
+                
+                let description;
+                
+                if (muteList.join('\n').length > 4000)
+                    description = muteList.join('\n').slice(0, 4000) + '...';
+                else
+                    description = muteList.join('\n');
+                
+                const embed = new EmbedBuilder()
+                    .setTitle('📋 Danh sách thành viên bị Mute')
+                    .setDescription(description)
+                    .setColor(0x00ff00)
+                    .setFooter({ 
+                        text: 'Dùng lệnh sau để gỡ mute:\n🔹Lệnh Slash: /unmute @user\n🔹Lệnh Prefix: 69!unmute @user' 
+                    });
+
+                await interactionOrMessage.reply({ embeds: [embed], ephemeral: true });
+                return;
+            } catch (error) {
+                console.error('Lỗi khi lấy danh sách mute:', error);
+                await interactionOrMessage.reply({ content: '⚠️ Không thể lấy danh sách người bị Mute!', ephemeral: true });
+                return;
+            }
+        }
+
+        if (targetUser && targetUser.id === interactionOrMessage.client.user?.id) {
             await interactionOrMessage.reply({ content: '🚫 Bro muốn tôi tự vả hả? 🤡', ephemeral: true });
             return;
         }

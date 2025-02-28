@@ -90,6 +90,29 @@ export class TictactoeDataManager {
         }
     }
 
+    static clearAllData(): void {
+        this.activeGames.clear();
+        try {
+            let currentData = {};
+            if (fs.existsSync(TICTACTOE_DATA_PATH)) {
+                const fileContent = fs.readFileSync(TICTACTOE_DATA_PATH, 'utf-8').trim();
+                let currentData;
+                if (fileContent)
+                    currentData = JSON.parse(fileContent);
+                else
+                    currentData = {};
+            }
+    
+            fs.writeFileSync(TICTACTOE_DATA_PATH, JSON.stringify({}, null, 2));
+    
+            if (Object.keys(currentData).length > 0) {
+                console.log('✅ Đã xóa toàn bộ dữ liệu TicTacToe trong file JSON.');
+            }
+        } catch (error) {
+            console.error('⚠️ Lỗi khi xóa dữ liệu TicTacToe:', error);
+        }
+    }
+
     static getGameByUser(userId: string, guildId: string): TictactoeData | null {
         const games = this.getGames();
         if (!games[guildId]) return null;

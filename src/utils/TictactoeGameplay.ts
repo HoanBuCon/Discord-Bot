@@ -16,7 +16,6 @@ export class TictactoeGameplay {
         this.games = {};
     }
 
-
     constructor(player1: string, player2: string, guildId: string, messageId: string, channelId: string, boardSize: number = 3) {
         this.player1 = player1;
         this.player2 = player2;
@@ -24,7 +23,10 @@ export class TictactoeGameplay {
         this.channelId = channelId;
         this.messageId = messageId;
         this.currentPlayer = player1;
-        this.boardSize = boardSize === 5 ? 5 : 3;
+        this.boardSize = boardSize;
+        if (boardSize === 5) {
+            this.boardSize = 5;
+        }
         this.winCondition = this.boardSize;
         this.board = Array(this.boardSize).fill(null).map(() => Array(this.boardSize).fill(-1));
     }
@@ -44,8 +46,11 @@ export class TictactoeGameplay {
         display += '```';
         return display;
     }
-    
 
+    getInitialBoard(): string {
+        return this.renderBoard();
+    }
+    
     isPlayerTurn(playerId: string): boolean {
         return this.currentPlayer === playerId;
     }
