@@ -13,7 +13,7 @@ export class MoveCommand extends Command {
  
         if (interactionOrMessage instanceof Message) {
             if (!args || args.length < 2) {
-                await interactionOrMessage.reply({ content: '⚠️ Hãy nhập nước đi theo prefix `69!move x y`' });
+                await interactionOrMessage.reply({ content: '⚠️ Hãy nhập nước đi theo prefix `69!move y x` hoặc slash `/move y x`' });
                 return;
             }
             x = parseInt(args[0]);
@@ -24,7 +24,7 @@ export class MoveCommand extends Command {
         }
 
         if (isNaN(x) || isNaN(y) || x < 0 || y < 0) {
-            await interactionOrMessage.reply({ content: '🚫 Nước đi không hợp lệ! X và Y phải là số nguyên không âm.', ephemeral: true });
+            await interactionOrMessage.reply({ content: '🚫 Nước đi không hợp lệ! Y và X phải là số nguyên không âm.', ephemeral: true });
             return;
         }
 

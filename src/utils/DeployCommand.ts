@@ -57,8 +57,13 @@ export class DeployCommand {
                 .setDescription('Gỡ ban một người dùng khỏi server')
                 .addStringOption(option =>
                     option.setName('userid')
-                        .setDescription('ID của người dùng cần unban hoặc "all" để unban tất cả')
-                        .setRequired(false)),
+                        .setDescription('ID của người dùng cần unban')
+                        .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('all')
+                        .setDescription('Unban tất cả người dùng')
+                        .setRequired(false)
+                        .addChoices({ name: 'all', value: 'all' })),
 
             new SlashCommandBuilder()
                 .setName('kick')
@@ -85,8 +90,13 @@ export class DeployCommand {
                 .setDescription('Gỡ Mute người dùng trong server')
                 .addUserOption(option =>
                     option.setName('user')
-                        .setDescription('Người dùng cần unmute hoặc "all" để unmute tất cả')
-                        .setRequired(false)),
+                        .setDescription('Người dùng cần unmute')
+                        .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('all')
+                        .setDescription('Unmute tất cả người dùng')
+                        .setRequired(false)
+                        .addChoices({ name: 'all', value: 'all' })),
 
             new SlashCommandBuilder()
                 .setName('tictactoe')
@@ -107,12 +117,12 @@ export class DeployCommand {
                 .setName('move')
                 .setDescription('Đánh một nước đi đến tọa độ chỉ định trong Tic Tac Toe')
                 .addIntegerOption(option =>
-                    option.setName('x')
-                        .setDescription('Tọa độ X (hàng)')
-                        .setRequired(true))
-                .addIntegerOption(option =>
                     option.setName('y')
                         .setDescription('Tọa độ Y (cột)')
+                        .setRequired(true))
+                .addIntegerOption(option =>
+                    option.setName('x')
+                        .setDescription('Tọa độ X (hàng)')
                         .setRequired(true)),
 
             new SlashCommandBuilder()
