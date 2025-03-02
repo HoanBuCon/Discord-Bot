@@ -13,20 +13,21 @@ export class UnbanCommand extends Command {
         const guild = interactionOrMessage.guild;
         let member: GuildMember | null;
 
+        // Xac dinh doi tuong thuc thi lenh
         if (interactionOrMessage instanceof Message)
             member = interactionOrMessage.member;
         else
             member = interactionOrMessage.member as GuildMember;
 
         if (!guild || !member) {
-            if (interactionOrMessage instanceof ChatInputCommandInteraction) {
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
                 await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
-            } else {
+            else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
-            }
             return;
         }
 
+        // Cum dieu kien kiem tra quyen han
         if (!(await permissions.checkPermissions(member, PermissionsBitField.Flags.BanMembers))) {
             return;
         }

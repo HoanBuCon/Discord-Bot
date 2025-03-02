@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Message, PermissionsBitField, GuildMember } from 'discord.js';
+import { ChatInputCommandInteraction, Message, PermissionsBitField, GuildMember, MessageFlags } from 'discord.js';
 import { Command } from '../Command';
 import { PermissionUtils } from '../../utils/PermissionUtils';
 
@@ -10,18 +10,23 @@ export class KickCommand extends Command {
     async execute(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): Promise<void> {
         const permissions = new PermissionUtils(interactionOrMessage, args);
         const guild = interactionOrMessage.guild;
-        const member = interactionOrMessage.member as GuildMember | null;
+        let member: GuildMember | null;
+        
+        // Xac dinh doi tuong thuc thi lenh
+        if (interactionOrMessage instanceof Message)
+            member = interactionOrMessage.member;
+        else
+            member = interactionOrMessage.member as GuildMember;
 
-        if (!guild) {
-            await this.reply(interactionOrMessage, '🚫 Lệnh này chỉ có thể thực hiện trong một server!', true);
+        if (!guild || !member) {
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+            else
+                await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
         }
 
-        if (!member) {
-            await this.reply(interactionOrMessage, '⚠️ Không tìm thấy thành viên!', true);
-            return;
-        }
-
+        // Cum dieu kien kiem tra quyen han
         if (!(await permissions.checkPermissions(member, PermissionsBitField.Flags.KickMembers))) {
             // Ban khong co quyen su dung lenh nay
             return;
@@ -65,11 +70,15 @@ export class KickCommand extends Command {
         }
     }
 
+    // Phuong thuc tich ich "Reply" dung de gui phan hoi cho lenh Prefix va Slash
     private async reply(interactionOrMessage: ChatInputCommandInteraction | Message, message: string, ephemeral: boolean): Promise<void> {
         if (interactionOrMessage instanceof ChatInputCommandInteraction) {
-            await interactionOrMessage.reply({ content: message, ephemeral });
-        } else {
+            if (ephemeral)
+                await interactionOrMessage.reply({ content: message, flags: MessageFlags.Ephemeral });
+            else
+                await interactionOrMessage.reply({ content: message });
+        } else
             await interactionOrMessage.reply(message);
-        }
+
     }
 }

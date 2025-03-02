@@ -12,17 +12,23 @@ export class MuteCommand extends Command {
     async execute(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): Promise<void> {
         const permissions = new PermissionUtils(interactionOrMessage, args);
         const guild = interactionOrMessage.guild;
-        let member: GuildMember | null = null;
+        let member: GuildMember | null;
 
-        if ('member' in interactionOrMessage) {
+        // Xac dinh doi tuong thuc thi lenh
+        if (interactionOrMessage instanceof Message)
+            member = interactionOrMessage.member;
+        else
             member = interactionOrMessage.member as GuildMember;
-        }
 
         if (!guild || !member) {
-            await interactionOrMessage.reply({ content: '🚫 Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+            else
+                await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
         }
 
+        // Cum dieu kien kiem tra quyen han
         if (!(await permissions.checkPermissions(member, PermissionsBitField.Flags.MuteMembers))) {
             return;
         }
@@ -79,6 +85,7 @@ export class MuteCommand extends Command {
             const replyMessage = await interactionOrMessage.reply({ content: `✅ Đã Mute ${targetUser} trong **${duration}** phút! 🔇` });
             console.log(`✅ Đã Mute ${targetUser.tag} tại server ${guild.name}`);
 
+            // Luu ID tin nhan
             if (interactionOrMessage instanceof ChatInputCommandInteraction) {
                 const fetchedReply = await interactionOrMessage.fetchReply();
                 replyMessageId = fetchedReply.id;
@@ -112,11 +119,11 @@ export class MuteCommand extends Command {
             input = args[1];
         }
     
-        if (!input) return 15;
+        if (!input) return 15; // Mac dinh Mute 15 phut
     
-        if (input.toLowerCase() === "inf") return null;
+        if (input.toLowerCase() === "inf") return null; // Mute vinh vien
     
-        const match = input.match(/^(\d+)([mhd])$/);
+        const match = input.match(/^(\d+)([mhd])$/); // Tach chuoi: duration + don_vi_thoi_gian
         if (match) {
             const value = parseInt(match[1], 10);
             const unit = match[2];
@@ -128,9 +135,10 @@ export class MuteCommand extends Command {
             }
         }
     
-        return 15;
+        return 15; // Mac dinh Ban 15 phut neu input khong hop le
     }
 
+    // Phuong thuc lay role "Muted" va chuan hoa ve lowerCase
     private async getMuteRole(guild: Guild): Promise<Role | null> {
         const muteRole = guild.roles.cache.find(role => role.name.toLowerCase() === 'muted');
         return muteRole || null;

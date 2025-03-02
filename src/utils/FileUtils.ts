@@ -1,13 +1,13 @@
 import { Message, ChatInputCommandInteraction, MessageComponentInteraction, ModalSubmitInteraction, EmbedBuilder } from 'discord.js';
 import type { Interaction } from 'discord.js';
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 
 export class FileUtils {
-    static readFile(filePath: string): string | null {
+    static async readFile(filePath: string): Promise<string | null> {
         const fullPath = path.resolve(__dirname, '../textFiles', filePath);
         try {
-            return fs.readFileSync(fullPath, 'utf-8');
+            return await fs.readFile(fullPath, 'utf-8');
         } catch (error) {
             console.error(`Lỗi đọc file ${filePath}:`, error);
             return null;
@@ -19,21 +19,32 @@ export class FileUtils {
         filePath: string, 
         customMessage?: string
     ): Promise<void> {
-        const content = this.readFile(filePath);
+        const content = await this.readFile(filePath);
         if (!content) {
             await this.reply(interactionOrMessage, '⚠️ Không thể đọc nội dung file!');
             return;
         }
 
         const embed = this.createEmbed(filePath, content);
-        await this.reply(interactionOrMessage, customMessage || '', embed);
+        if (customMessage) {
+            await this.reply(interactionOrMessage, customMessage, embed);
+        } else {
+            await this.reply(interactionOrMessage, '', embed);
+        }
     }
 
     // Ham tao tin nhan Embed (neu can dung)
     private static createEmbed(title: string, content: string): EmbedBuilder {
+        let truncatedContent: string;
+    
+        if (content.length > 4000)
+            truncatedContent = content.slice(0, 4000) + '...';
+        else
+            truncatedContent = content;
+    
         return new EmbedBuilder()
             .setTitle(`📜 ${title}`)
-            .setDescription(content.length > 4000 ? content.slice(0, 4000) + '...' : content)
+            .setDescription(truncatedContent)
             .setColor(0x00ff00);
     }
 
@@ -43,11 +54,17 @@ export class FileUtils {
         embed?: EmbedBuilder
     ): Promise<void> {
         if (interactionOrMessage instanceof Message) {
-            await interactionOrMessage.reply({ content: message, embeds: embed ? [embed] : [] });
+            let embedsArray = [];
+            if (embed)
+                embedsArray.push(embed);
+            await interactionOrMessage.reply({ content: message, embeds: embedsArray });
             return;
         }
     
-        const options = { content: message, embeds: embed ? [embed] : [] };
+        let embedsArray = [];
+        if (embed)
+            embedsArray.push(embed);
+        const options = { content: message, embeds: embedsArray };
     
         if (
             interactionOrMessage instanceof ChatInputCommandInteraction ||
