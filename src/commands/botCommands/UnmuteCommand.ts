@@ -25,18 +25,13 @@ export class UnmuteCommand extends Command {
             member = interactionOrMessage.member as GuildMember;
 
         if (!guild || !member) {
-<<<<<<< HEAD
-            await interactionOrMessage.reply({ content: '🚫 Lệnh này chỉ hoạt động trong server.', ephemeral: true });
-=======
             if (interactionOrMessage instanceof ChatInputCommandInteraction)
                 await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
->>>>>>> 819e7a8 (Refactor all commands in ./commands/botCommands)
             return;
         }
 
-        // Cum dieu kien kiem tra quyen han
         if (!(await permissions.checkPermissions(member, PermissionsBitField.Flags.MuteMembers))) {
             // Ban khong co quyen su dung lenh nay
             return;

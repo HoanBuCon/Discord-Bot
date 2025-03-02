@@ -45,18 +45,12 @@ export class MoveCommand extends Command {
             return;
         }
 
-<<<<<<< HEAD
-        const playerId = interactionOrMessage instanceof Message
-            ? interactionOrMessage.author.id
-            : interactionOrMessage.user.id;
-=======
         // Lay ID nguoi choi
         let playerId: string;
         if (interactionOrMessage instanceof Message)
             playerId = interactionOrMessage.author.id;
         else
             playerId = interactionOrMessage.user.id;
->>>>>>> 819e7a8 (Refactor all commands in ./commands/botCommands)
 
         const gameInstance = TictactoeDataManager.getGameplayInstance(guildId);
         if (!gameInstance) {
