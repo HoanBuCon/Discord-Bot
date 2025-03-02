@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Message } from 'discord.js';
+import { ChatInputCommandInteraction, Message, GuildMember } from 'discord.js';
 import { Command } from '../Command';
 import { TictactoeDataManager } from '../../utils/TictactoeDataManager';
 
@@ -8,17 +8,34 @@ export class MoveCommand extends Command {
     }
 
     async execute(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): Promise<void> {
+        const guild = interactionOrMessage.guild;
+        let member: GuildMember | null;
         let x: number;
         let y: number;
- 
-        if (interactionOrMessage instanceof Message) {
+
+        // Xac dinh doi tuong thuc thi lenh
+        if (interactionOrMessage instanceof Message)
+            member = interactionOrMessage.member;
+        else
+            member = interactionOrMessage.member as GuildMember;
+
+        if (!guild || !member) {
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+            else
+                await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
+            return;
+        }
+        const guildId = guild.id;
+         
+        if (interactionOrMessage instanceof Message) { // Neu la lenh Prefix
             if (!args || args.length < 2) {
                 await interactionOrMessage.reply({ content: '⚠️ Hãy nhập nước đi theo prefix `69!move x y`' });
                 return;
             }
             x = parseInt(args[0]);
             y = parseInt(args[1]);
-        } else {
+        } else { // Neu la lenh Slash
             x = interactionOrMessage.options.getInteger('x', true);
             y = interactionOrMessage.options.getInteger('y', true);
         }
@@ -28,15 +45,18 @@ export class MoveCommand extends Command {
             return;
         }
 
+<<<<<<< HEAD
         const playerId = interactionOrMessage instanceof Message
             ? interactionOrMessage.author.id
             : interactionOrMessage.user.id;
-
-        const guildId = interactionOrMessage.guild?.id;
-        if (!guildId) {
-            await interactionOrMessage.reply({ content: '🚫 Lệnh này chỉ có thể dùng trong server.', ephemeral: true });
-            return;
-        }
+=======
+        // Lay ID nguoi choi
+        let playerId: string;
+        if (interactionOrMessage instanceof Message)
+            playerId = interactionOrMessage.author.id;
+        else
+            playerId = interactionOrMessage.user.id;
+>>>>>>> 819e7a8 (Refactor all commands in ./commands/botCommands)
 
         const gameInstance = TictactoeDataManager.getGameplayInstance(guildId);
         if (!gameInstance) {
@@ -57,6 +77,7 @@ export class MoveCommand extends Command {
 
         let responseMessage = moveResult.message;
 
+        // Kiem tra trang thai của gameplay
         const gameStatus = gameInstance.checkGameStatus();
         if (gameStatus.ended) {
             responseMessage += `\n🎉 Trò chơi kết thúc! ${gameStatus.message}`;
@@ -76,12 +97,24 @@ export class EndTicTacToeCommand extends Command {
     }
 
     async execute(interactionOrMessage: ChatInputCommandInteraction | Message): Promise<void> {
-        const guildId = interactionOrMessage.guild?.id;
-        if (!guildId) {
-            await interactionOrMessage.reply({ content: '🚫 Lệnh này chỉ có thể dùng trong server.', ephemeral: true });
+        const guild = interactionOrMessage.guild;
+        let member: GuildMember | null;
+
+        if (interactionOrMessage instanceof Message)
+            member = interactionOrMessage.member;
+        else
+            member = interactionOrMessage.member as GuildMember;
+
+        if (!guild || !member) {
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+            else
+                await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
         }
+        const guildId = guild.id;
 
+        // Kiem tra xem co gameplay nao dang dien ra khong
         const gameInstance = TictactoeDataManager.getGameplayInstance(guildId);
         if (!gameInstance) {
             await interactionOrMessage.reply({ content: '⚠️ Không có ván chơi nào để dừng.', ephemeral: true });

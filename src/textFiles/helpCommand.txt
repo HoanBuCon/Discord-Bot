@@ -2,7 +2,7 @@
 > - Đây là dự án đầu tay của Hoàn Bự Con với mục tiêu tạo ra con bot siêu chôl lầy cho mọi người sử dụng 🐧
 > - Mã nguồn của Bot được public tại Github Repository: https://github.com/HoanBuCon/Discord-Bot
 - **Prefix** của Bot là `69!`
-- Bạn có thể sử dụng**lệnh Prefix** `69!help` hoặc**lệnh Slash** `/help` để xem thông tin chi tiết các lệnh
+- Bạn có thể sử dụng **lệnh Prefix** `69!help` hoặc **lệnh Slash** `/help` để xem thông tin chi tiết các lệnh
 
 # I. DANH SÁCH CÁC LỆNH
 ## 1. Lệnh Tiện Ích
