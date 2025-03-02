@@ -12,21 +12,23 @@ export class UnmuteCommand extends Command {
     async execute(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): Promise<void> {
         const permissions = new PermissionUtils(interactionOrMessage, args);
         const guild = interactionOrMessage.guild;
-        let member: GuildMember | null = null;
+        let member: GuildMember | null;
 
-        if ('member' in interactionOrMessage) {
+        // Xac dinh doi tuong thuc thi lenh
+        if (interactionOrMessage instanceof Message)
+            member = interactionOrMessage.member;
+        else
             member = interactionOrMessage.member as GuildMember;
-        }
 
         if (!guild || !member) {
-            if (interactionOrMessage instanceof ChatInputCommandInteraction) {
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
                 await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
-            } else {
+            else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
-            }
             return;
         }
 
+        // Cum dieu kien kiem tra quyen han
         if (!(await permissions.checkPermissions(member, PermissionsBitField.Flags.MuteMembers))) {
             return;
         }

@@ -35,7 +35,7 @@ export class CommandHandler {
         this.registerCommand(new EndTicTacToeCommand());
     }
 
-    registerCommand(command: ICommand, alias?: string): void {
+    private registerCommand(command: ICommand, alias?: string): void {
         const name = command.getName();
         if (this.commands.has(name)) {
             console.warn(`⚠️ Lệnh "${name}" đã tồn tại!`);
