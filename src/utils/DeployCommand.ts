@@ -117,12 +117,12 @@ export class DeployCommand {
                 .setName('move')
                 .setDescription('Đánh một nước đi đến tọa độ chỉ định trong Tic Tac Toe')
                 .addIntegerOption(option =>
-                    option.setName('y')
-                        .setDescription('Tọa độ Y (cột)')
+                    option.setName('x')
+                        .setDescription('Tọa độ X (cột)')
                         .setRequired(true))
                 .addIntegerOption(option =>
-                    option.setName('x')
-                        .setDescription('Tọa độ X (hàng)')
+                    option.setName('y')
+                        .setDescription('Tọa độ Y (hàng)')
                         .setRequired(true)),
 
             new SlashCommandBuilder()
@@ -142,6 +142,7 @@ export class DeployCommand {
             console.log('✅ Đăng ký lệnh Slash thành công!');
         } catch (error) {
             console.error('⚠️ Lỗi khi đăng ký lệnh Slash:', error);
+            throw error;
         }
     }
 }

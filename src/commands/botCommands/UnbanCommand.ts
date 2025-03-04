@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Message, PermissionsBitField, GuildMember, Client, EmbedBuilder } from 'discord.js';
+import { ChatInputCommandInteraction, Message, PermissionsBitField, GuildMember } from 'discord.js';
 import { Command } from '../Command';
 import { PermissionUtils } from '../../utils/PermissionUtils';
 import { UnbanService } from '../../utils/UnbanService';
@@ -21,7 +21,7 @@ export class UnbanCommand extends Command {
 
         if (!guild || !member) {
             if (interactionOrMessage instanceof ChatInputCommandInteraction)
-                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
@@ -34,11 +34,10 @@ export class UnbanCommand extends Command {
 
         const botPermissionError = permissions.validateBotPermissions(guild, PermissionsBitField.Flags.BanMembers);
         if (botPermissionError) {
-            if (interactionOrMessage instanceof ChatInputCommandInteraction) {
-                await interactionOrMessage.reply({ content: botPermissionError, ephemeral: true });
-            } else {
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: botPermissionError, flags: 64 });
+            else
                 await interactionOrMessage.reply(botPermissionError);
-            }
             return;
         }
 
@@ -64,9 +63,10 @@ export class UnbanCommand extends Command {
                         successCount++;
                     } catch (error) {
                         console.error(`⚠️ Lỗi khi Unban ${ban.user.id}:`, error);
+                        throw error;
                     }
                 }
-                await interactionOrMessage.reply(`✅ Đã Unban thành công ${successCount}/${bans.size} người dùng! 🔓`);
+                await interactionOrMessage.reply(`✅ Đã Unban thành công ${successCount}/${bans.size} người dùng trong server ${guild.name}! 🔓`);
                 return;
             }
 
@@ -101,6 +101,7 @@ export class UnbanCommand extends Command {
             } catch (error) {
                 console.error('Lỗi khi Unban:', error);
                 await interactionOrMessage.reply('⚠️ Lỗi khi thực hiện Unban!');
+                throw error;
             }
         }
     }

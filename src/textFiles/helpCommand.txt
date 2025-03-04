@@ -66,8 +66,8 @@
 ### 3.1. **`/tictactoe`**
 - Cấu trúc lệnh: `/tictactoe <@user>`
 ### 3.2. **`/move`**
-- Cấu trúc lệnh: `/move <tọa độ y> <tọa độ x>`
-- Ví dụ: `/move 1 2` để đánh vào tọa độ y = 1; x = 2
+- Cấu trúc lệnh: `/move <tọa độ x> <tọa độ y>`
+- Ví dụ: `/move 1 2` để đánh vào tọa độ x = 1; y = 2
 - Lưu ý về giá trị tọa độ: Không nhập giá trị âm và giá trị thập phân
 ### 3.3. **`/endtictactoe`**
 - Cấu trúc lệnh: `/endtictactoe`

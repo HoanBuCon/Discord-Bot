@@ -43,8 +43,6 @@ export class UnbanService {
     }
 
     static async unbanUser(client: Client, userId: string, guildId: string, banData?: BanData, manual: boolean = false): Promise<void> {
-        if (!BanDataManager.isUserBanned(userId, guildId)) return;
-    
         const guild = client.guilds.cache.get(guildId);
         if (!guild) {
             await BanDataManager.removeBanData(userId, guildId, client);
@@ -52,6 +50,7 @@ export class UnbanService {
         }
     
         try {
+            // Fetch du lieu cua guild de kiem tra xem user co thuc su bi Ban khong
             const ban = await guild.bans.fetch(userId).catch(() => null);
             if (!ban) {
                 console.log(`🚫 Người dùng ${userId} không bị Ban trên server ${guild.name}.`);
@@ -64,7 +63,8 @@ export class UnbanService {
     
             const unbanData = await BanDataManager.removeBanData(userId, guildId, client);
     
-            if (manual) return;
+            if (manual)
+                return;
     
             const logChannel = guild.channels.cache.find(channel => channel.isTextBased());
             if ((unbanData?.messageId && unbanData?.channelId) && (logChannel && 'send' in logChannel)) {
@@ -91,6 +91,7 @@ export class UnbanService {
                     }
                 } catch (error) {
                     console.error(`⚠️ Không thể gửi thông báo Unban cho ${userId} trong guild ${guildId}:`, error);
+                    throw error;
                 }
             }
         } catch (error) {
@@ -104,6 +105,7 @@ export class UnbanService {
             } else {
                 console.error(`⚠️ Lỗi không xác định khi Unban ${userId} ở server ${guildId}:`, error);
             }
+            throw error;
         }
     }
 
@@ -132,6 +134,7 @@ export class UnbanService {
                 console.log(`✅🔓 Đã Unban ${userId} khỏi server ${guild.name}.`);
             } catch (error) {
                 console.error(`⚠️ Lỗi khi Unban ${userId} khỏi server ${guildId}:`, error);
+                throw error;
             }
         }
 
@@ -148,7 +151,7 @@ export class UnbanService {
                 .setFooter({ text: 'Dùng lệnh sau để gỡ ban:\n🔹Lệnh Slash: /unban <userID>/<all>\n🔹Lệnh Prefix: 69!unban <userID>/<all>' });
         }
 
-        const banList = bans.map(ban => `\`${ban.user.tag}\` (ID: **${ban.user.id}**)`).join('\n');
+        const banList = bans.map(ban => `\`${ban.user.tag}\` | ID: **${ban.user.id}**`).join('\n');
         let description = banList.slice(0, 4000);
         if (banList.length > 4000) {
             description += '...';
@@ -208,6 +211,7 @@ export class UnbanService {
                     successCount++;
                 } catch (error) {
                     console.error(`⚠️ Lỗi khi Unban ${ban.user.id} khỏi server ${guildId}:`, error);
+                    throw error;
                 }
             }
 

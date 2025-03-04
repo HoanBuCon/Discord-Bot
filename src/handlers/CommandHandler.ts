@@ -48,7 +48,16 @@ export class CommandHandler {
     }
 
     async handleCommand(interactionOrMessage: ChatInputCommandInteraction | Message, commandName: string, args?: string[]): Promise<void> {
-        console.log(`🔧 Xử lý lệnh: ${commandName}`);
+        let guild = null;
+
+        // Lay guild tu slash command hoac prefix command
+        if (interactionOrMessage instanceof ChatInputCommandInteraction)
+            guild = interactionOrMessage.guild;
+        else if (interactionOrMessage instanceof Message)
+            guild = interactionOrMessage.guild;
+
+        console.log(`🔧 Xử lý lệnh "${commandName}" tại server "${guild?.name}"`);
+
         const command = this.commands.get(commandName);
         if (!command) {
             if (interactionOrMessage instanceof Message) {

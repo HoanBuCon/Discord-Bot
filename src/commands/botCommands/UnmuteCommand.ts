@@ -1,5 +1,6 @@
-import { ChatInputCommandInteraction, Message, PermissionsBitField, Guild, GuildMember, Client, EmbedBuilder } from 'discord.js';
+import { ChatInputCommandInteraction, Message, PermissionsBitField, GuildMember, Client } from 'discord.js';
 import { Command } from '../Command';
+import { MuteCommand } from './MuteCommand';
 import { PermissionUtils } from '../../utils/PermissionUtils';
 import { UnmuteService } from '../../utils/UnmuteService';
 import { MuteDataManager } from '../../utils/MuteDataManager';
@@ -12,6 +13,7 @@ export class UnmuteCommand extends Command {
     async execute(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): Promise<void> {
         const permissions = new PermissionUtils(interactionOrMessage, args);
         const guild = interactionOrMessage.guild;
+        const client: Client = interactionOrMessage.client;
         let member: GuildMember | null;
 
         // Xac dinh doi tuong thuc thi lenh
@@ -22,7 +24,7 @@ export class UnmuteCommand extends Command {
 
         if (!guild || !member) {
             if (interactionOrMessage instanceof ChatInputCommandInteraction)
-                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
@@ -35,11 +37,10 @@ export class UnmuteCommand extends Command {
 
         const botPermissionError = permissions.validateBotPermissions(guild, PermissionsBitField.Flags.MuteMembers);
         if (botPermissionError) {
-            if (interactionOrMessage instanceof ChatInputCommandInteraction) {
-                await interactionOrMessage.reply({ content: botPermissionError, ephemeral: true });
-            } else {
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: botPermissionError, flags: 64 });
+            else
                 await interactionOrMessage.reply(botPermissionError);
-            }
             return;
         }
 
@@ -53,29 +54,41 @@ export class UnmuteCommand extends Command {
 
             if (isUnmuteAll) {
                 const mutedUsers = MuteDataManager.getMutedUsers();
-                let usersInGuild: string[] = [];
+                const muteCommandInstance = new MuteCommand();
+                const muteRole = await muteCommandInstance.getMuteRole(guild);
+            
+                let usersInGuildFromJson: string[] = [];
                 if (mutedUsers) {
-                    usersInGuild = Object.entries(mutedUsers)
+                    usersInGuildFromJson = Object.entries(mutedUsers)
                         .filter(([_, guilds]) => guilds[guild.id])
                         .map(([userId, _]) => userId);
                 }
-
+            
+                let usersInGuildFromRole: string[] = [];
+                if (muteRole) {
+                    const membersWithMuteRole = guild.members.cache.filter(member => member.roles.cache.has(muteRole.id));
+                    usersInGuildFromRole = membersWithMuteRole.map(member => member.id);
+                }
+            
+                const usersInGuild = Array.from(new Set([...usersInGuildFromJson, ...usersInGuildFromRole]));
+            
                 if (usersInGuild.length === 0) {
                     await interactionOrMessage.reply('🚫 Không có người dùng nào bị Mute trong server.');
                     return;
                 }
-
+            
                 let successCount = 0;
                 for (const userId of usersInGuild) {
-                    const muteData = mutedUsers[userId][guild.id];
+                    const muteData = mutedUsers[userId]?.[guild.id];
                     try {
-                        await UnmuteService.unmuteUser(interactionOrMessage.client, userId, guild.id, muteData, true);
+                        await UnmuteService.unmuteUser(client, userId, guild.id, muteData, true);
                         successCount++;
                     } catch (error) {
                         console.error(`⚠️ Lỗi khi Unmute ${userId}:`, error);
+                        throw error;
                     }
                 }
-                await interactionOrMessage.reply(`✅ Đã Unmute thành công ${successCount}/${usersInGuild.length} người dùng! 🔊`);
+                await interactionOrMessage.reply(`✅ Đã Unmute thành công ${successCount}/${usersInGuild.length} người dùng trong server ${guild.name}! 🔊`);
                 return;
             }
 
@@ -110,7 +123,7 @@ export class UnmuteCommand extends Command {
                 return;
             }
 
-            if (!MuteDataManager.isUserMuted(targetUser.id, guild.id)) {
+            if (!MuteDataManager.isUserMuted(targetUser.id, guild.id, client)) {
                 await interactionOrMessage.reply(`🚫 ${targetUser} không bị Mute!`);
                 return;
             }
@@ -121,6 +134,7 @@ export class UnmuteCommand extends Command {
             } catch (error) {
                 console.error('Lỗi khi Unmute:', error);
                 await interactionOrMessage.reply('⚠️ Lỗi khi thực hiện Unmute!');
+                throw error;
             }
         }
     }
