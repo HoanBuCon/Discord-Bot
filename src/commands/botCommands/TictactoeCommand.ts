@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Message, PermissionsBitField, GuildMember } from 'discord.js';
+import { ChatInputCommandInteraction, Message, PermissionsBitField, GuildMember, Client } from 'discord.js';
 import { Command } from '../Command';
 import { PermissionUtils } from '../../utils/PermissionUtils';
 import { TictactoeDataManager } from '../../utils/TictactoeDataManager';
@@ -12,27 +12,31 @@ export class TictactoeCommand extends Command {
     async execute(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): Promise<void> {
         const permissions = new PermissionUtils(interactionOrMessage, args);
         const guild = interactionOrMessage.guild;
-        let member: GuildMember | null = null;
+        let member: GuildMember | null;
 
-        let authorPlayer;
-
-        if (interactionOrMessage instanceof Message) {
-            authorPlayer = interactionOrMessage.author;
-        } else {
-            authorPlayer = interactionOrMessage.user;
-        }
-
-        if ('member' in interactionOrMessage) {
+        // Xac dinh doi tuong thuc thi lenh
+        if (interactionOrMessage instanceof Message)
+            member = interactionOrMessage.member;
+        else
             member = interactionOrMessage.member as GuildMember;
-        }
+
+        // Xac dinh nguoi dung lenh
+        let authorPlayer;
+        if (interactionOrMessage instanceof Message)
+            authorPlayer = interactionOrMessage.author;
+        else
+            authorPlayer = interactionOrMessage.user;
 
         if (!guild || !member) {
-            await interactionOrMessage.reply({ content: '🚫 Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
+            else
+                await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
         }
 
+        // Xac dinh doi thu
         let targetPlayer = permissions.getMentionedUser(interactionOrMessage, args, true);
-
         if (!targetPlayer) {
             await interactionOrMessage.reply({ content: '⚠️ Hãy chỉ định một thành viên!', ephemeral: true });
             return;
@@ -62,10 +66,18 @@ export class TictactoeCommand extends Command {
         try {
             let replyMessageId: string | null = null;
             let replyChannelId: string | null = interactionOrMessage.channelId ?? null;
-
-            const replyMessage = await interactionOrMessage.reply({ content: `✅ Bắt đầu Minigame Tic Tac Toe!` });
+        
+            let boardSize = 3;
+            if (args && args[1] === "5") {
+                boardSize = 5;
+            }
+        
+            const gameInstance = new TictactoeGameplay(authorPlayer.id, targetPlayer.id, guild.id, interactionOrMessage.id, interactionOrMessage.channelId, authorPlayer.tag, targetPlayer.tag, boardSize);
+            const initialBoard = gameInstance.getInitialBoard();
+            const replyMessage = await interactionOrMessage.reply({ content: `✅ Bắt đầu Minigame Tic Tac Toe!\n${initialBoard}\nĐến lượt <@${authorPlayer.id}>!` });
             console.log(`✅ Bắt đầu Minigame Tic Tac Toe tại server ${guild.name}`);
 
+            // Luu ID tin nhan
             if (interactionOrMessage instanceof ChatInputCommandInteraction) {
                 const fetchedReply = await interactionOrMessage.fetchReply();
                 replyMessageId = fetchedReply.id;
@@ -74,18 +86,16 @@ export class TictactoeCommand extends Command {
                 replyMessageId = replyMessage.id;
                 replyChannelId = interactionOrMessage.channel.id;
             }
-
+        
             if (replyMessageId && replyChannelId) {
-                let boardSize = args?.[1] === "5" ? 5 : 3;
-            
-                TictactoeDataManager.saveTictactoeData(authorPlayer.id, targetPlayer.id, guild.id, replyMessageId, replyChannelId, boardSize);
-            
-                const gameInstance = new TictactoeGameplay(authorPlayer.id, targetPlayer.id, guild.id, replyMessageId, replyChannelId, boardSize);
+                TictactoeDataManager.saveTictactoeData(authorPlayer.id, targetPlayer.id, guild.id, replyMessageId, replyChannelId, authorPlayer.tag, targetPlayer.tag, boardSize);
                 TictactoeDataManager.saveGameplayInstance(gameInstance, guild.id);
             }
         } catch (error) {
             console.error(`Lỗi khi bắt đầu Minigame:`, error);
-            await interactionOrMessage.reply({ content: `🚫 Không thể bắt đầu Minigame Tic Tac Toe!` })
+            await interactionOrMessage.reply({ content: `🚫 Không thể bắt đầu Minigame Tic Tac Toe!` });
+            throw error;
         }
+        
     }
 }

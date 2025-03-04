@@ -1,5 +1,6 @@
 import { Message, TextChannel } from 'discord.js';
 import { TictactoeDataManager } from './TictactoeDataManager';
+import { Client } from 'discord.js';
 
 export class TictactoeGameplay {
     private board: number[][];
@@ -9,6 +10,8 @@ export class TictactoeGameplay {
     private guildId: string;
     private channelId: string;
     private messageId: string;
+    private player1Tag: string;
+    private player2Tag: string;
     private boardSize: number;
     private winCondition: number;
     private static games: Record<string, TictactoeGameplay>;
@@ -16,15 +19,16 @@ export class TictactoeGameplay {
         this.games = {};
     }
 
-
-    constructor(player1: string, player2: string, guildId: string, messageId: string, channelId: string, boardSize: number = 3) {
+    constructor(player1: string, player2: string, guildId: string, messageId: string, channelId: string, player1Tag: string, player2Tag: string, boardSize: number = 3) {
         this.player1 = player1;
         this.player2 = player2;
         this.guildId = guildId;
         this.channelId = channelId;
         this.messageId = messageId;
         this.currentPlayer = player1;
-        this.boardSize = 3;
+        this.player1Tag = player1Tag;
+        this.player2Tag = player2Tag;
+        this.boardSize = boardSize;
         if (boardSize === 5) {
             this.boardSize = 5;
         }
@@ -34,9 +38,9 @@ export class TictactoeGameplay {
 
     private renderBoard(): string {
         let display = `\`\`\`\n`;
-        display += '   ' + [...Array(this.boardSize).keys()].join(' ') + '\n';
+        display += 'y\\x  ' + [...Array(this.boardSize).keys()].join(' ') + '\n\n';
         this.board.forEach((row, i) => {
-            display += `${i} `;
+            display += `${i}   `;
             row.forEach(cell => {
                 if (cell === -1) display += '| ';
                 else if (cell === 0) display += '|O';
@@ -47,40 +51,44 @@ export class TictactoeGameplay {
         display += '```';
         return display;
     }
-    
 
+    getInitialBoard(): string {
+        return this.renderBoard();
+    }
+    
     isPlayerTurn(playerId: string): boolean {
         return this.currentPlayer === playerId;
     }
 
-    makeMove(playerId: string, row: number, col: number): { success: boolean; message: string } {
+    makeMove(playerId: string, col: number, row: number,): { success: boolean; message: string } {
         if (playerId !== this.currentPlayer) {
             return { success: false, message: '🚫 Không phải lượt của bạn!' };
         }
         if (row < 0 || row >= this.boardSize || col < 0 || col >= this.boardSize) {
-            return { success: false, message: `🚫 Vị trí không hợp lệ! Hãy chọn số từ 0 đến ${this.boardSize - 1}` };
+            return { success: false, message: `⚠️ Vị trí không hợp lệ! Hãy chọn số từ 0 đến ${this.boardSize - 1}` };
         }
         if (this.board[row][col] !== -1) {
             return { success: false, message: '🚫 Vị trí này đã được đánh rồi!' };
         }
         this.board[row][col] = this.currentPlayer === this.player1 ? 1 : 0;
-        return { success: true, message: `✅ Bạn đã đánh vào ô (${row}, ${col})!\n${this.renderBoard()}` };
+        return { success: true, message: `✅ Bạn đã đánh vào ô (${col}, ${row})!\n${this.renderBoard()}` };
     }
 
     switchTurn(): void {
-        if (this.currentPlayer === this.player1)
+        if (this.currentPlayer === this.player1) {
             this.currentPlayer = this.player2;
-        else
+            console.log(`🔄 Đến lượt ${this.player2Tag}`);
+        } else {
             this.currentPlayer = this.player1;
-
-        console.log(`🔄 Đến lượt ${this.getCurrentPlayerMention()}`);
+            console.log(`🔄 Đến lượt ${this.player1Tag}`);
+        }
     }
 
     checkGameStatus(): { ended: boolean, message: string } {
         for (let row = 0; row < this.boardSize; row++) {
             for (let col = 0; col < this.boardSize; col++) {
                 if (this.board[row][col] !== -1 && this.checkWin(row, col)) {
-                    return { ended: true, message: `🎉 <@${this.currentPlayer}> đã chiến thắng!` };
+                    return { ended: true, message: `🎉 <@${this.currentPlayer}> đã chiến thắng! 🎉` };
                 }
             }
         }

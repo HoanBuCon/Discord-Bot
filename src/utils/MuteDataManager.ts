@@ -1,18 +1,38 @@
 import { Client } from 'discord.js';
 import type { MuteData } from '../interfaces/IBaseData';
+import { MuteCommand } from '../commands/botCommands/MuteCommand';
 import fs from 'fs';
 import path from 'path';
 
 const MUTED_USERS_PATH = path.resolve(__dirname, '../commands/botCommands/dataFiles/commandData/mutedUsers.json');
 
 export class MuteDataManager {
-    static isUserMuted(userId: string, guildId: string): boolean {
+    static async isUserMuted(userId: string, guildId: string, client: Client): Promise<boolean> {
+        const guild = client.guilds.cache.get(guildId);
         const mutedUsers = this.getMutedUsers();
-        return mutedUsers[userId]?.[guildId] !== undefined;
+    
+        const isMutedInData = mutedUsers[userId]?.[guildId] !== undefined;
+        if (!guild)
+            return isMutedInData;
+    
+        try {
+            const member = await guild.members.fetch(userId);
+            const muteCommandInstance = new MuteCommand();
+            const muteRole = await muteCommandInstance.getMuteRole(guild);
+            let hasMuteRole = false;
+            if (muteRole)
+                hasMuteRole = member.roles.cache.has(muteRole.id);
+
+            return isMutedInData || hasMuteRole;
+        } catch (error) {
+            console.error(`⚠️ Lỗi khi kiểm tra role "Muted" của thành viên ${userId}:`, error);
+            return isMutedInData;
+        }
     }
 
     static getMutedUsers(): Record<string, Record<string, MuteData>> {
-        if (!fs.existsSync(MUTED_USERS_PATH)) return {};
+        if (!fs.existsSync(MUTED_USERS_PATH))
+            return {};
     
         try {
             const data = fs.readFileSync(MUTED_USERS_PATH, 'utf-8').trim();
@@ -26,11 +46,10 @@ export class MuteDataManager {
         }
     }
     
-
-    static saveMuteData(userId: string, guildId: string, unmuteTime: number, messageId?: string, channelId?: string): void {
+    static saveMuteData(userId: string, guildId: string, unmuteTime: number, messageId?: string, channelId?: string, executorId?: string): void {
         const mutedUsers = this.getMutedUsers();
     
-        if (!userId || !guildId || !unmuteTime) {
+        if (!userId || !guildId) {
             console.error('⚠️ Dữ liệu Mute không hợp lệ:', { userId, guildId, unmuteTime });
             return;
         }
@@ -39,10 +58,9 @@ export class MuteDataManager {
             mutedUsers[userId] = {};
         }
     
-        mutedUsers[userId][guildId] = { userId, guildId, unmuteTime, messageId, channelId };
+        mutedUsers[userId][guildId] = { userId, guildId, unmuteTime, messageId, channelId, executorId };
         this.writeMuteData(mutedUsers);
     }
-    
 
     static async removeMuteData(userId: string, guildId: string, client: Client): Promise<{ messageId?: string; channelId?: string } | null> {
         let mutedUsers = this.getMutedUsers();
@@ -78,6 +96,7 @@ export class MuteDataManager {
                 console.log('✅ Dữ liệu đã được cập nhật vào file mutedUsers.json.');
         } catch (error) {
             console.error('⚠️ Lỗi khi cập nhật file mutedUsers.json:', error);
+            throw error;
         }
     }
 }

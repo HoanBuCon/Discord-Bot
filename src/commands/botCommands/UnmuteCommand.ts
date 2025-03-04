@@ -1,11 +1,9 @@
-import { ChatInputCommandInteraction, Message, PermissionsBitField, Guild, GuildMember, Client, Role } from 'discord.js';
+import { ChatInputCommandInteraction, Message, PermissionsBitField, GuildMember, Client } from 'discord.js';
 import { Command } from '../Command';
+import { MuteCommand } from './MuteCommand';
 import { PermissionUtils } from '../../utils/PermissionUtils';
 import { UnmuteService } from '../../utils/UnmuteService';
-import fs from 'fs';
-import path from 'path';
-
-const MUTED_USERS_PATH = path.resolve(__dirname, '../dataFiles/commandData/mutedUsers.json');
+import { MuteDataManager } from '../../utils/MuteDataManager';
 
 export class UnmuteCommand extends Command {
     constructor() {
@@ -15,79 +13,129 @@ export class UnmuteCommand extends Command {
     async execute(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): Promise<void> {
         const permissions = new PermissionUtils(interactionOrMessage, args);
         const guild = interactionOrMessage.guild;
-        let member: GuildMember | null = null;
+        const client: Client = interactionOrMessage.client;
+        let member: GuildMember | null;
 
-        if ('member' in interactionOrMessage) {
+        // Xac dinh doi tuong thuc thi lenh
+        if (interactionOrMessage instanceof Message)
+            member = interactionOrMessage.member;
+        else
             member = interactionOrMessage.member as GuildMember;
-        }
 
         if (!guild || !member) {
-            await interactionOrMessage.reply({ content: '🚫 Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
+            else
+                await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
         }
 
+        // Cum dieu kien kiem tra quyen han
         if (!(await permissions.checkPermissions(member, PermissionsBitField.Flags.MuteMembers))) {
-            // Ban khong co quyen su dung lenh nay
             return;
         }
 
         const botPermissionError = permissions.validateBotPermissions(guild, PermissionsBitField.Flags.MuteMembers);
         if (botPermissionError) {
-            await interactionOrMessage.reply({ content: botPermissionError, ephemeral: true });
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: botPermissionError, flags: 64 });
+            else
+                await interactionOrMessage.reply(botPermissionError);
             return;
         }
 
-        const targetUser = permissions.getMentionedUser(interactionOrMessage, args, true);
-        if (!targetUser) {
-            await interactionOrMessage.reply({ content: '⚠️ Hãy chỉ định một thành viên!', ephemeral: true });
+        if (interactionOrMessage instanceof ChatInputCommandInteraction) {
+            await UnmuteService.handleUnmuteCommand(interactionOrMessage, interactionOrMessage.client);
             return;
         }
 
-        if (targetUser.id === interactionOrMessage.client.user?.id) {
-            await interactionOrMessage.reply({ content: '🚫 Bro muốn tôi tự vả hả? 🤡', ephemeral: true });
-            return;
-        }
+        if (interactionOrMessage instanceof Message) {
+            const isUnmuteAll = args && args[0] === 'all';
 
-        const targetMember = await permissions.getMember(guild, targetUser.id);
-        if (!targetMember) {
-            await interactionOrMessage.reply({ content: '⚠️ Không tìm thấy thành viên!', ephemeral: true });
-            return;
-        }
-
-        const targetError = permissions.validateTarget(member, targetMember, 'unmute');
-        if (targetError) {
-            await interactionOrMessage.reply({ content: targetError, ephemeral: true });
-            return;
-        }
-
-        try {
-            const muteRole = await this.getMuteRole(guild);
-            if (!muteRole) {
-                await interactionOrMessage.reply({ content: '⚠️ Không tìm thấy role "Muted"!', ephemeral: true });
+            if (isUnmuteAll) {
+                const mutedUsers = MuteDataManager.getMutedUsers();
+                const muteCommandInstance = new MuteCommand();
+                const muteRole = await muteCommandInstance.getMuteRole(guild);
+            
+                let usersInGuildFromJson: string[] = [];
+                if (mutedUsers) {
+                    usersInGuildFromJson = Object.entries(mutedUsers)
+                        .filter(([_, guilds]) => guilds[guild.id])
+                        .map(([userId, _]) => userId);
+                }
+            
+                let usersInGuildFromRole: string[] = [];
+                if (muteRole) {
+                    const membersWithMuteRole = guild.members.cache.filter(member => member.roles.cache.has(muteRole.id));
+                    usersInGuildFromRole = membersWithMuteRole.map(member => member.id);
+                }
+            
+                const usersInGuild = Array.from(new Set([...usersInGuildFromJson, ...usersInGuildFromRole]));
+            
+                if (usersInGuild.length === 0) {
+                    await interactionOrMessage.reply('🚫 Không có người dùng nào bị Mute trong server.');
+                    return;
+                }
+            
+                let successCount = 0;
+                for (const userId of usersInGuild) {
+                    const muteData = mutedUsers[userId]?.[guild.id];
+                    try {
+                        await UnmuteService.unmuteUser(client, userId, guild.id, muteData, true);
+                        successCount++;
+                    } catch (error) {
+                        console.error(`⚠️ Lỗi khi Unmute ${userId}:`, error);
+                        throw error;
+                    }
+                }
+                await interactionOrMessage.reply(`✅ Đã Unmute thành công ${successCount}/${usersInGuild.length} người dùng trong server ${guild.name}! 🔊`);
                 return;
             }
 
-            if (!targetMember.roles.cache.has(muteRole.id)) {
-                await interactionOrMessage.reply({ content: `🚫 ${targetUser} không bị Mute!`, ephemeral: true });
+            const targetUser = permissions.getMentionedUser(interactionOrMessage, args, true);
+
+            if (!targetUser) {
+                try {
+                    const embed = await UnmuteService.createMutedListEmbed(guild);
+                    await interactionOrMessage.reply({ embeds: [embed] });
+                    return;
+                } catch (error) {
+                    console.error('Lỗi khi lấy danh sách Mute:', error);
+                    await interactionOrMessage.reply('⚠️ Không thể lấy danh sách người bị Mute!');
+                    return;
+                }
+            }
+
+            if (targetUser.id === interactionOrMessage.client.user?.id) {
+                await interactionOrMessage.reply('🚫 Bro muốn tôi tự vả hả? 🤡');
                 return;
             }
 
-            await UnmuteService.unmuteUser(interactionOrMessage.client as Client, targetUser.id, guild.id, undefined, true);
-            await interactionOrMessage.reply(`✅ ${targetUser} đã được Unmute! 🔊`);
-        } catch (error) {
-            console.error('Lỗi khi unmute:', error);
-            await interactionOrMessage.reply({ content: '⚠️ Lỗi khi thực hiện Unmute!', ephemeral: true });
+            const targetMember = await permissions.getMember(guild, targetUser.id);
+            if (!targetMember) {
+                await interactionOrMessage.reply('⚠️ Không tìm thấy thành viên!');
+                return;
+            }
+
+            const targetError = permissions.validateTarget(member, targetMember, 'unmute');
+            if (targetError) {
+                await interactionOrMessage.reply(targetError);
+                return;
+            }
+
+            if (!MuteDataManager.isUserMuted(targetUser.id, guild.id, client)) {
+                await interactionOrMessage.reply(`🚫 ${targetUser} không bị Mute!`);
+                return;
+            }
+
+            try {
+                await UnmuteService.unmuteUser(interactionOrMessage.client, targetUser.id, guild.id, undefined, true);
+                await interactionOrMessage.reply(`✅ ${targetUser} đã được Unmute! 🔊`);
+            } catch (error) {
+                console.error('Lỗi khi Unmute:', error);
+                await interactionOrMessage.reply('⚠️ Lỗi khi thực hiện Unmute!');
+                throw error;
+            }
         }
-    }
-
-    private async getMuteRole(guild: Guild): Promise<Role | null> {
-        let muteRole = guild.roles.cache.find(role => role.name.toLowerCase() === 'muted');
-
-        if (!muteRole) {
-            console.error('⚠️ Không tìm thấy role "Muted"!');
-            return null;
-        }
-
-        return muteRole;
     }
 }

@@ -7,10 +7,12 @@ export interface IBaseData {
 
 export interface BanData extends IBaseData {
     unbanTime: number;
+    executorId?: string;
 }
 
 export interface MuteData extends IBaseData {
     unmuteTime: number;
+    executorId?: string;
 }
 
 export interface TictactoeData {
@@ -19,6 +21,8 @@ export interface TictactoeData {
     guildId: string;
     messageId?: string;
     channelId?: string;
+    player1Tag: string;
+    player2Tag: string;
     boardSize: number;
     status: boolean;
 }

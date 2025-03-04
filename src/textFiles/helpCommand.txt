@@ -1,13 +1,73 @@
-> **Prefix** của chúng tôi là `69!`
-> Bạn có thể sử dụng **lệnh Prefix** `69!help` hoặc **lệnh Slash** `/help` để xem thông tin chi tiết các lệnh
-# DANH SÁCH CÁC LỆNH:
-> **`/help`**: Hiển thị hướng dẫn sử dụng Bot
-> **`/sua`**: Phản dmg con doggo vừa cắn bạn 🐧
-> **`/memaybeo`**: Dùng khi có thằng chửi mẹ bạn 🐧
-> **`/kick`**: Đuổi thành viên khỏi máy chủ
-> **`/ban`**: Cấm thành viên khỏi máy chủ
-> **`/unban`**: Gỡ lệnh cấm thành viên khỏi máy chủ
-> **`/mute`**: Cấm chat thành viên trong máy chủ
-> **`/unmute`**: Gỡ lệnh cấm chat thành viên trong máy chủ
-> **`/tictactoe`**: Minigame Tic Tac Toe chơi PvP với thành viên trong máy chủ
-> **`/move`**: Lệnh di chuyển đến tọa độ chỉ định trong minigame Tic Tac Toe
+# I. GIỚI THIỆU
+> - Đây là dự án đầu tay của Hoàn Bự Con với mục tiêu tạo ra con bot siêu chôl lầy cho mọi người sử dụng 🐧
+> - Mã nguồn của Bot được public tại Github Repository: https://github.com/HoanBuCon/Discord-Bot
+- **Prefix** của Bot là `69!`
+- Bạn có thể sử dụng **lệnh Prefix** `69!help` hoặc **lệnh Slash** `/help` để xem thông tin chi tiết các lệnh
+
+# II. DANH SÁCH CÁC LỆNH
+## 1. Lệnh Tiện Ích
+- **`/help`**: Hiển thị hướng dẫn sử dụng Bot
+- **`/sua`**: Phản dmg con doggo vừa cắn bạn 🐧
+- **`/memaybeo`**: Dùng khi có thằng chửi mẹ bạn 🐧
+## 2. Lệnh Quản Trị
+- **`/kick`**: Đuổi thành viên khỏi máy chủ
+- **`/ban`**: Cấm thành viên khỏi máy chủ
+- **`/unban`**: Gỡ lệnh cấm thành viên khỏi máy chủ
+- **`/mute`**: Cấm chat thành viên trong máy chủ
+- **`/unmute`**: Gỡ lệnh cấm chat thành viên trong máy chủ
+## 3. Lệnh Minigame Tic Tac Toe
+- **`/tictactoe`**: Minigame Tic Tac Toe chơi PvP với thành viên trong máy chủ
+- **`/move`**: Lệnh đánh vào tọa độ chỉ định trong minigame Tic Tac Toe
+- **`/endtictactoe`**: Dừng trận đấu Tic Tac Toe đang diễn ra
+
+# III. HƯỚNG DẪN SỬ DỤNG
+## 1. Lệnh Tiện Ích
+### 1.1. **`/sua`**
+- Cấu trúc lệnh: `/sua <@user>`
+- Cấu trúc lệnh tự hủy: `/sua` *(không cần thêm user)*
+### 1.2. **`/memaybeo`**
+- Cấu trúc lệnh: `/memaybeo <@user>`
+- Cấu trúc lệnh viết tắt: `69!mmb <@user>` *(lệnh viết tắt chỉ hoạt động với prefix)*
+- Cấu trúc lệnh tự hủy: `/memaybeo` *(không cần thêm user, hoạt động được với lệnh viết tắt)*
+## 2. Lệnh Quản Trị
+### 2.1. **`/kick`**
+- Cấu trúc lệnh: `/kick <@user>`
+### 2.2. **`/ban`**
+- Cấu trúc lệnh: `/ban <@user> <thời_gian_cấm> <đơn_vị_thời_gian>`
+- Quy ước đơn vị thời gian:
+> • **m**: Phút
+> • **h**: Giờ
+> • **d**: Ngày
+> • **inf**: Vĩnh viễn
+- Ví dụ:
+> `/ban @exampleUser 3d` *(ban người dùng exampleUser với thời gian 3 ngày)*
+> `/ban @exampleUser inf` *(ban người dùng exampleUser vĩnh viễn)*
+### 2.3. **`/unban`**
+- Cấu trúc lệnh: `/unban <userID>` *(unban người dùng được chỉ định)*
+- Cấu trúc lệnh: `/unban <all>` *(unban tất cả người dùng trong server)*
+- Hiển thị danh sách thành viên bị ban: `/unmute`
+- Lưu ý: Thông tin thành viên bị ban sẽ hiển thị trong danh sách *(Banlist)*
+### 2.3. **`/mute`**
+- Cấu trúc lệnh: `/mute <@user> <thời_gian_cấm> <đơn_vị_thời_gian>`
+- Quy ước đơn vị thời gian:
+> • **m**: Phút
+> • **h**: Giờ
+> • **d**: Ngày
+> • **inf**: Vĩnh viễn
+- Ví dụ:
+> `/mute @exampleUser 3d` *(mute người dùng exampleUser với thời gian 3 ngày)*
+> `/mute @exampleUser inf` *(mute người dùng exampleUser vĩnh viễn)*
+### 2.5. **`/unmute`**
+- Cấu trúc lệnh: `/unmute <@user>` *(unmute người dùng được chỉ định)*
+- Cấu trúc lệnh: `/unmute <all>` *(unmute tất cả người dùng trong server)*
+- Hiển thị danh sách thành viên bị mute: `/unmute`
+- Lưu ý: Thông tin thành viên bị mute sẽ hiển thị trong danh sách *(Mutelist)*
+## 3. Lệnh Minigame Tic Tac Toe
+### 3.1. **`/tictactoe`**
+- Cấu trúc lệnh: `/tictactoe <@user>`
+### 3.2. **`/move`**
+- Cấu trúc lệnh: `/move <tọa độ x> <tọa độ y>`
+- Ví dụ: `/move 1 2` để đánh vào tọa độ x = 1; y = 2
+- Lưu ý về giá trị tọa độ: Không nhập giá trị âm và giá trị thập phân
+### 3.3. **`/endtictactoe`**
+- Cấu trúc lệnh: `/endtictactoe`

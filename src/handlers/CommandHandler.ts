@@ -11,7 +11,7 @@ import { MuteCommand } from '../commands/botCommands/MuteCommand';
 import { UnmuteCommand } from '../commands/botCommands/UnmuteCommand';
 import { TictactoeCommand } from '../commands/botCommands/TictactoeCommand';
 import { MoveCommand } from '../commands/botCommands/MoveEndCommand';
-import { EndGameCommand } from '../commands/botCommands/MoveEndCommand';
+import { EndTicTacToeCommand } from '../commands/botCommands/MoveEndCommand';
 
 export class CommandHandler {
     private commands: Map<string, ICommand>;
@@ -32,10 +32,10 @@ export class CommandHandler {
         this.registerCommand(new UnmuteCommand());
         this.registerCommand(new TictactoeCommand());
         this.registerCommand(new MoveCommand());
-        this.registerCommand(new EndGameCommand());
+        this.registerCommand(new EndTicTacToeCommand());
     }
 
-    registerCommand(command: ICommand, alias?: string): void {
+    private registerCommand(command: ICommand, alias?: string): void {
         const name = command.getName();
         if (this.commands.has(name)) {
             console.warn(`⚠️ Lệnh "${name}" đã tồn tại!`);
@@ -48,7 +48,16 @@ export class CommandHandler {
     }
 
     async handleCommand(interactionOrMessage: ChatInputCommandInteraction | Message, commandName: string, args?: string[]): Promise<void> {
-        console.log(`🔧 Xử lý lệnh: ${commandName}`);
+        let guild = null;
+
+        // Lay guild tu slash command hoac prefix command
+        if (interactionOrMessage instanceof ChatInputCommandInteraction)
+            guild = interactionOrMessage.guild;
+        else if (interactionOrMessage instanceof Message)
+            guild = interactionOrMessage.guild;
+
+        console.log(`🔧 Xử lý lệnh "${commandName}" tại server "${guild?.name}"`);
+
         const command = this.commands.get(commandName);
         if (!command) {
             if (interactionOrMessage instanceof Message) {

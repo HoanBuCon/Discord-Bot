@@ -50,10 +50,11 @@ export class TictactoeDataManager {
             console.log('✅ Dữ liệu TicTacToe đã được cập nhật.');
         } catch (error) {
             console.error('⚠️ Lỗi khi ghi vào tictactoeData.json:', error);
+            throw error;
         }
     }
 
-    static saveTictactoeData(userId1: string, userId2: string, guildId: string, messageId: string, channelId: string, boardSize: number): void {
+    static saveTictactoeData(userId1: string, userId2: string, guildId: string, messageId: string, channelId: string, player1Tag: string, player2Tag: string, boardSize: number): void {
         const games = this.getGames();
 
         if (!games[guildId]) {
@@ -61,7 +62,7 @@ export class TictactoeDataManager {
         }
 
         const gameId = `${userId1}-${userId2}`;
-        games[guildId][gameId] = { userId1, userId2, guildId, messageId, channelId, boardSize, status: true };
+        games[guildId][gameId] = { userId1, userId2, guildId, messageId, channelId, player1Tag, player2Tag, boardSize, status: true };
 
         this.writeGames(games);
     }
@@ -78,6 +79,30 @@ export class TictactoeDataManager {
             }
             
             this.writeGames(games);
+        }
+    }
+
+    static clearAllData(): void {
+        this.activeGames.clear();
+        try {
+            let currentData = {};
+            if (fs.existsSync(TICTACTOE_DATA_PATH)) {
+                const fileContent = fs.readFileSync(TICTACTOE_DATA_PATH, 'utf-8').trim();
+                let currentData;
+                if (fileContent)
+                    currentData = JSON.parse(fileContent);
+                else
+                    currentData = {};
+            }
+    
+            fs.writeFileSync(TICTACTOE_DATA_PATH, JSON.stringify({}, null, 2));
+    
+            if (Object.keys(currentData).length > 0) {
+                console.log('✅ Đã xóa toàn bộ dữ liệu TicTacToe trong file JSON.');
+            }
+        } catch (error) {
+            console.error('⚠️ Lỗi khi xóa dữ liệu TicTacToe:', error);
+            throw error;
         }
     }
 

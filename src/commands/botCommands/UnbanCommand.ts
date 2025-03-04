@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Message, PermissionsBitField, GuildMember, Client, EmbedBuilder } from 'discord.js';
+import { ChatInputCommandInteraction, Message, PermissionsBitField, GuildMember } from 'discord.js';
 import { Command } from '../Command';
 import { PermissionUtils } from '../../utils/PermissionUtils';
 import { UnbanService } from '../../utils/UnbanService';
@@ -11,68 +11,98 @@ export class UnbanCommand extends Command {
     async execute(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): Promise<void> {
         const permissions = new PermissionUtils(interactionOrMessage, args);
         const guild = interactionOrMessage.guild;
-        let member: GuildMember | null = interactionOrMessage instanceof Message ? interactionOrMessage.member : interactionOrMessage.member as GuildMember;
+        let member: GuildMember | null;
+
+        // Xac dinh doi tuong thuc thi lenh
+        if (interactionOrMessage instanceof Message)
+            member = interactionOrMessage.member;
+        else
+            member = interactionOrMessage.member as GuildMember;
 
         if (!guild || !member) {
-            await interactionOrMessage.reply({ content: '🚫 Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
+            else
+                await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
         }
 
+        // Cum dieu kien kiem tra quyen han
         if (!(await permissions.checkPermissions(member, PermissionsBitField.Flags.BanMembers))) {
-            // Ban khong co quyen su dung lenh nay
             return;
         }
 
         const botPermissionError = permissions.validateBotPermissions(guild, PermissionsBitField.Flags.BanMembers);
         if (botPermissionError) {
-            await interactionOrMessage.reply({ content: botPermissionError, ephemeral: true });
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: botPermissionError, flags: 64 });
+            else
+                await interactionOrMessage.reply(botPermissionError);
             return;
         }
-
-        let userId: string | null = null;
 
         if (interactionOrMessage instanceof ChatInputCommandInteraction) {
-            userId = interactionOrMessage.options.getString('userid', false);
-        } else if (interactionOrMessage instanceof Message && args && args.length > 0) {
-            userId = args[0];
-        }
-
-        if (!userId) {
-            try {
-                const bans = await guild.bans.fetch();
-                if (bans.size === 0) {
-                    await interactionOrMessage.reply({ content: '⚠️ Hiện tại không có ai bị Ban!', ephemeral: true });
-                    return;
-                }
-        
-                const banList = bans.map(ban => `\`${ban.user.tag}\` (ID: **${ban.user.id}**)`).join("\n");
-        
-                const embed = new EmbedBuilder()
-                    .setTitle('📋 Danh sách thành viên bị Ban')
-                    .setDescription(banList.length > 4000 ? banList.slice(0, 4000) + '...' : banList)
-                    .setColor(0xff0000)
-                    .setFooter({ text: 'Dùng lệnh sau để gỡ ban:\n🔹Lệnh Slash: /unban <userID>\n🔹Lệnh Prefix: 69!unban <userID>' });
-        
-                await interactionOrMessage.reply({ embeds: [embed], ephemeral: true });
-                return;
-            } catch (error) {
-                console.error('Lỗi khi lấy danh sách ban:', error);
-                await interactionOrMessage.reply({ content: '⚠️ Không thể lấy danh sách người bị Ban!', ephemeral: true });
-                return;
-            }
-        }
-
-        if (!/^\d{17,19}$/.test(userId)) {
-            await interactionOrMessage.reply({ content: '⚠️ ID người dùng không hợp lệ!', ephemeral: true });
+            await UnbanService.handleUnbanCommand(interactionOrMessage, interactionOrMessage.client);
             return;
         }
 
-        try {
-            await UnbanService.unbanUser(interactionOrMessage.client as Client, userId, guild.id, undefined, true);
-            await interactionOrMessage.reply(`✅ Đã Unban người dùng với **ID: ${userId}** 🔓`);
-        } catch (error) {
-            console.error('Lỗi khi unban:', error);
-            await interactionOrMessage.reply({ content: '⚠️ Lỗi khi thực hiện Unban!', ephemeral: true });
+        if (interactionOrMessage instanceof Message) {
+            const isUnbanAll = args && args[0] === 'all';
+
+            if (isUnbanAll) {
+                const bans = await guild.bans.fetch();
+                if (bans.size === 0) {
+                    await interactionOrMessage.reply('🚫 Không có người dùng nào bị Ban trong server.');
+                    return;
+                }
+
+                let successCount = 0;
+                for (const ban of bans.values()) {
+                    try {
+                        await UnbanService.unbanUser(interactionOrMessage.client, ban.user.id, guild.id, undefined, true);
+                        successCount++;
+                    } catch (error) {
+                        console.error(`⚠️ Lỗi khi Unban ${ban.user.id}:`, error);
+                        throw error;
+                    }
+                }
+                await interactionOrMessage.reply(`✅ Đã Unban thành công ${successCount}/${bans.size} người dùng trong server ${guild.name}! 🔓`);
+                return;
+            }
+
+            const userId = args && args[0];
+
+            if (!userId) {
+                try {
+                    const embed = await UnbanService.createBannedListEmbed(guild);
+                    await interactionOrMessage.reply({ embeds: [embed] });
+                    return;
+                } catch (error) {
+                    console.error('Lỗi khi lấy danh sách Ban:', error);
+                    await interactionOrMessage.reply('⚠️ Không thể lấy danh sách người bị Ban!');
+                    return;
+                }
+            }
+
+            if (!/^\d{17,19}$/.test(userId)) {
+                await interactionOrMessage.reply('⚠️ ID người dùng không hợp lệ!');
+                return;
+            }
+
+            const ban = await guild.bans.fetch(userId).catch(() => null);
+            if (!ban) {
+                await interactionOrMessage.reply(`🚫 Người dùng với ID ${userId} không bị Ban!`);
+                return;
+            }
+
+            try {
+                await UnbanService.unbanUser(interactionOrMessage.client, userId, guild.id, undefined, true);
+                await interactionOrMessage.reply(`✅ Đã Unban người dùng với ID: ${userId}! 🔓`);
+            } catch (error) {
+                console.error('Lỗi khi Unban:', error);
+                await interactionOrMessage.reply('⚠️ Lỗi khi thực hiện Unban!');
+                throw error;
+            }
         }
     }
 }
