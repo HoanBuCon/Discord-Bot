@@ -33,6 +33,14 @@ export class DeployCommand {
                         .setRequired(false)),
 
             new SlashCommandBuilder()
+                .setName('ongliem')
+                .setDescription('Biết ông Liêm không ? 🐧')
+                .addUserOption(option => 
+                    option.setName('user')
+                        .setDescription('Chọn người để hỏi về ông Liêm')
+                        .setRequired(false)),
+
+            new SlashCommandBuilder()
                 .setName('memaybeo')
                 .setDescription('Phản Dmg khi có thằng chửi mẹ bạn 🐧')
                 .addUserOption(option => 

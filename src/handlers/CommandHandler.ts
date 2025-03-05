@@ -3,6 +3,7 @@ import type { ICommand } from '../interfaces/ICommand';
 import { FileUtils } from '../utils/FileUtils';
 import { HelpCommand } from '../commands/botCommands/HelpCommand';
 import { SuaCommand } from '../commands/botCommands/SuaCommand';
+import { LiemCommand } from '../commands/botCommands/LiemCommand';
 import { MmbCommand } from '../commands/botCommands/MmbCommand';
 import { KickCommand } from '../commands/botCommands/KickCommand';
 import { BanCommand } from '../commands/botCommands/BanCommand';
@@ -24,6 +25,7 @@ export class CommandHandler {
     private registerDefaultCommands(): void {
         this.registerCommand(new HelpCommand());
         this.registerCommand(new SuaCommand());
+        this.registerCommand(new LiemCommand(), 'liem');
         this.registerCommand(new MmbCommand(), 'mmb');
         this.registerCommand(new KickCommand());
         this.registerCommand(new BanCommand());
