@@ -26,6 +26,6 @@ export class HelpCommand extends Command {
         }
 
         // Gui noi dung file .txt duoi dang Embed Message
-        await FileUtils.sendFileContent(interactionOrMessage, 'helpCommand.txt');
+        await FileUtils.sendFileContent(interactionOrMessage, 'HelpCommand.txt');
     }
 }

@@ -37,7 +37,7 @@ export class MmbCommand extends Command {
         }
 
         const mentionText = `<@${user.id}>`;
-        const fileContent = await FileUtils.readFile('mmbCommand.txt');
+        const fileContent = await FileUtils.readFile('MmbCommand.txt');
 
         if (!fileContent) {
             await interactionOrMessage.reply('⚠️ Không thể đọc nội dung file!');

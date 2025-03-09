@@ -10,6 +10,7 @@
 - **`/sua`**: Phản dmg con doggo vừa cắn bạn 🐧
 - **`/ongliem`**: Hỏi một người nào đó về ông Liêm
 - **`/memaybeo`**: Dùng khi có thằng chửi mẹ bạn 🐧
+- **`/tinhtuoi`**: Máy tính tuổi thông minh
 ## 2. Lệnh Quản Trị
 - **`/kick`**: Đuổi thành viên khỏi máy chủ
 - **`/ban`**: Cấm thành viên khỏi máy chủ
@@ -34,6 +35,9 @@
 - Cấu trúc lệnh: `/memaybeo <@user>`
 - Cấu trúc lệnh viết tắt: `69!mmb <@user>` *(lệnh viết tắt chỉ hoạt động với prefix)*
 - Cấu trúc lệnh tự hủy: `/memaybeo` *(không cần thêm user, hoạt động được với lệnh viết tắt)*
+### 1.4: **`/tinhtuoi`**
+- Cấu trúc lệnh: `/tinhtuoi <@user>` *(Yêu cầu người khác sử dụng máy tính tuổi)*
+- Cấu trúc lệnh tự tính tuổi: `/tinhtuoi` *(không cần thêm user, bot sẽ tính tuổi cho mình)*
 ## 2. Lệnh Quản Trị
 ### 2.1. **`/kick`**
 - Cấu trúc lệnh: `/kick <@user>`

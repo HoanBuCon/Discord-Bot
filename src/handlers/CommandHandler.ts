@@ -13,6 +13,7 @@ import { UnmuteCommand } from '../commands/botCommands/UnmuteCommand';
 import { TictactoeCommand } from '../commands/botCommands/TictactoeCommand';
 import { MoveCommand } from '../commands/botCommands/MoveEndCommand';
 import { EndTicTacToeCommand } from '../commands/botCommands/MoveEndCommand';
+import { TinhtuoiCommand } from '../commands/botCommands/TinhtuoiCommand';
 
 export class CommandHandler {
     private commands: Map<string, ICommand>;
@@ -35,6 +36,7 @@ export class CommandHandler {
         this.registerCommand(new TictactoeCommand());
         this.registerCommand(new MoveCommand());
         this.registerCommand(new EndTicTacToeCommand());
+        this.registerCommand(new TinhtuoiCommand());
     }
 
     private registerCommand(command: ICommand, alias?: string): void {

@@ -136,6 +136,14 @@ export class DeployCommand {
             new SlashCommandBuilder()
                 .setName('endtictactoe')
                 .setDescription('Dừng trận đấu Tic Tac Toe đang diễn ra'),
+
+            new SlashCommandBuilder()
+                .setName('tinhtuoi')
+                .setDescription('Máy tính tuổi thông minh')
+                .addUserOption(option => 
+                    option.setName('user')
+                        .setDescription('Tính tuổi một người nào đó (không nhập = tính tuổi chính mình)')
+                        .setRequired(false)),
         ].map(command => command.toJSON());
     }
 

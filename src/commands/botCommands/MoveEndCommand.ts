@@ -136,6 +136,6 @@ export class EndTicTacToeCommand extends Command {
         }
 
         TictactoeDataManager.removeGameplayInstance(guildId);
-        await interactionOrMessage.reply({ content: '🛑 Trò chơi đã bị dừng!' });
+        await interactionOrMessage.reply({ content: '🛑 Đã dừng trò chơi đang diễn ra!' });
     }
 }
