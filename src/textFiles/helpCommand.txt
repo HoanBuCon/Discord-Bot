@@ -8,6 +8,7 @@
 ## 1. Lệnh Tiện Ích
 - **`/help`**: Hiển thị hướng dẫn sử dụng Bot
 - **`/sua`**: Phản dmg con doggo vừa cắn bạn 🐧
+- **`/ongliem`**: Hỏi một người nào đó về ông Liêm
 - **`/memaybeo`**: Dùng khi có thằng chửi mẹ bạn 🐧
 ## 2. Lệnh Quản Trị
 - **`/kick`**: Đuổi thành viên khỏi máy chủ
@@ -25,7 +26,11 @@
 ### 1.1. **`/sua`**
 - Cấu trúc lệnh: `/sua <@user>`
 - Cấu trúc lệnh tự hủy: `/sua` *(không cần thêm user)*
-### 1.2. **`/memaybeo`**
+### 1.2. **`/ongliem`**
+- Cấu trúc lệnh: `/ongliem <@user>`
+- Cấu trúc lệnh viết tắt: `69!liem <@user>` *(lệnh viết tắt chỉ hoạt động với prefix)*
+- Cấu trúc lệnh tự hủy: `/ongliem` *(không cần thêm user, hoạt động được với lệnh viết tắt)*
+### 1.3. **`/memaybeo`**
 - Cấu trúc lệnh: `/memaybeo <@user>`
 - Cấu trúc lệnh viết tắt: `69!mmb <@user>` *(lệnh viết tắt chỉ hoạt động với prefix)*
 - Cấu trúc lệnh tự hủy: `/memaybeo` *(không cần thêm user, hoạt động được với lệnh viết tắt)*
