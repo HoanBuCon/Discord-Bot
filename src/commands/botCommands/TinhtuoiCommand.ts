@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Message, GuildMember, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalSubmitInteraction, ButtonBuilder, ButtonStyle, ButtonInteraction, ComponentType, MessageComponentInteraction } from 'discord.js';
+import { ChatInputCommandInteraction, Message, GuildMember, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalSubmitInteraction, ButtonBuilder, ButtonStyle, ButtonInteraction, ComponentType, MessageComponentInteraction, Embed } from 'discord.js';
 import { User, type CollectorFilter } from 'discord.js';
 import { Command } from '../Command';
 import { PermissionUtils } from '../../utils/PermissionUtils';
@@ -70,12 +70,18 @@ export class TinhtuoiCommand extends Command {
                 targetUser = interactionOrMessage.user;
         }
 
-        const button = new ButtonBuilder()
+        const nhaptuoiButton = new ButtonBuilder()
             .setCustomId('tinhtuoi_button')
             .setLabel('Nhập tuổi')
             .setStyle(ButtonStyle.Primary);
 
-        const row = new ActionRowBuilder<ButtonBuilder>().addComponents(button);
+        const tinhlaiButton = new ButtonBuilder()
+            .setCustomId('tinhlai_button')
+            .setLabel('Tính lại')
+            .setStyle(ButtonStyle.Primary);
+
+        const nutNhaptuoi = new ActionRowBuilder<ButtonBuilder>().addComponents(nhaptuoiButton);
+        const nutTinhlai = new ActionRowBuilder<ButtonBuilder>().addComponents(tinhlaiButton);
 
         let reply: Message<boolean> | null = null;
         const embed = new EmbedBuilder()
@@ -89,17 +95,17 @@ export class TinhtuoiCommand extends Command {
                 await interactionOrMessage.reply({
                     content: `Oi oi oi <@${user.id}>!!`,
                     embeds: [embed],
-                    components: [row],
+                    components: [nutNhaptuoi],
                 });
 
-                if (interactionOrMessage.channel) {
+                if (interactionOrMessage.channel)
                     reply = await interactionOrMessage.fetchReply() as Message<boolean>;
-                }
+
             } else if (interactionOrMessage instanceof Message) {
                 reply = await interactionOrMessage.reply({
                     content: `Oi oi oi <@${user.id}>!!`,
                     embeds: [embed],
-                    components: [row],
+                    components: [nutNhaptuoi],
                 });
             }
         } catch (error) {
@@ -120,14 +126,23 @@ export class TinhtuoiCommand extends Command {
             componentType: ComponentType.Button,
         });
 
+        let age: number | undefined;
         collector.on('collect', async (interaction: ButtonInteraction) => {
-            await this.showModal(interaction, user);
-        });
+            try {
+                if (interaction.customId === 'tinhtuoi_button') {
+                    const calculatedAge = await this.showModal(interaction, user, nutTinhlai, reply);
+                    if (calculatedAge !== undefined)
+                        age = calculatedAge;
+                } 
+            } catch (error) {
+                console.error('⚠️ Lỗi khi xử lý button interaction:', error);
+                throw (error);
+            }
+        });        
 
         collector.on('end', async () => {
             try {
-                const updatedRow = new ActionRowBuilder<ButtonBuilder>()
-                    .addComponents(button.setDisabled(true));
+                const updatedRow = new ActionRowBuilder<ButtonBuilder>().addComponents(nhaptuoiButton.setDisabled(true));
         
                 await reply.edit({
                     content: '⚠️ Hết thời gian! Dùng lệnh `/tinhtuoi` hoặc `69!tinhtuoi` để thử lại!',
@@ -141,7 +156,7 @@ export class TinhtuoiCommand extends Command {
     }
 
     // Phuong thuc hien thi Modal (dung chung cho Slash va Prefix)
-    private async showModal(interaction: ChatInputCommandInteraction | ButtonInteraction, user: User): Promise<void> {
+    private async showModal(interaction: ChatInputCommandInteraction | ButtonInteraction, user: User, nutTinhlai: ActionRowBuilder<ButtonBuilder>, reply: Message<boolean>  ): Promise<number | undefined> {
         const modal = new ModalBuilder()
             .setCustomId('tinhtuoi_modal')
             .setTitle('Máy Tính Tuổi Thông Minh');
@@ -156,7 +171,7 @@ export class TinhtuoiCommand extends Command {
     
         const actionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(ageInput);
         modal.addComponents(actionRow);
-        
+
         try {
             await interaction.showModal(modal);
 
@@ -207,10 +222,60 @@ export class TinhtuoiCommand extends Command {
             updateProgress(95, 4000);
             updateProgress(100, 4500);
 
+            let resultMessage: Message<boolean>;
             setTimeout(async () => {
                 const resultEmbed = this.calculateAge(age, user);
-                await modalInteraction.editReply({ embeds: [resultEmbed] }).catch(() => {});
+                try {
+                    resultMessage = await modalInteraction.editReply({
+                        content: `Oi oi oi <@${user.id}>!!`,
+                        embeds: [resultEmbed], 
+                        components: [nutTinhlai],
+                    });
+
+                    const filter = (i: ButtonInteraction) => i.customId === 'tinhlai_button' && i.user.id === user.id;
+                    const collector = resultMessage.createMessageComponentCollector({
+                        filter,
+                        time: 60000,
+                        componentType: ComponentType.Button,
+                    });
+            
+                    let count = 0;
+                    collector.on('collect', async (interaction: ButtonInteraction) => {
+                        try {
+                            await interaction.deferUpdate();
+                            const resultEmbed = this.calculateAgain(count + 1, age, user);
+                            await interaction.editReply({
+                                content: `Oi oi oi <@${user.id}>!!`,
+                                embeds: [resultEmbed],
+                                components: [nutTinhlai],
+                            });
+                            count++;
+                        } catch (error) {
+                            console.error('Lỗi khi xử lý nút Tính lại:', error);
+                            throw error;
+                        }
+                    });
+            
+                    collector.on('end', async () => {
+                        try {
+                            const disabledNutTinhlai = new ActionRowBuilder<ButtonBuilder>().addComponents(nutTinhlai.components[0].setDisabled(true));
+
+                            await resultMessage.edit({
+                                content: `Oi oi oi <@${user.id}>!!`,
+                                embeds: [resultEmbed],
+                                components: [disabledNutTinhlai],
+                            });
+                        } catch (error) {
+                            console.error('⚠️ Lỗi khi kết thúc collector Embed 2:', error);
+                            throw error;
+                        }
+                    });
+                } catch (error) {
+                    console.log('⚠️ Lỗi khi gửi kết quả xử lý 100 %:', error);
+                    throw error;
+                }
             }, 5000);
+            return age;
         } catch (error) {
             console.error('⚠️ Lỗi khi xử lý modal:', error);
             throw (error);
@@ -219,26 +284,27 @@ export class TinhtuoiCommand extends Command {
 
     // Tinh tuoi (thuat toan sieu phuc tap oach xa lach vkl)
     private calculateAge(age: number, user: User): EmbedBuilder {
-        if (age == 0) {
-            return new EmbedBuilder()
-                .setColor(0x00FF00)
-                .setTitle('✅ Kết Quả')
-                .setDescription(`# Bạn hiện tại **${age} tuổi**, <@${user.id}>! 🎉\n*(Anh bạn còn chưa cai sữa mẹ 🍼💀💀☠️)*`)
-                .setTimestamp();
-        }
-        else if (age == 122) {
-            return new EmbedBuilder()
-                .setColor(0x00FF00)
-                .setTitle('✅ Kết Quả')
-                .setDescription(`# Bạn hiện tại **${age} tuổi**, <@${user.id}>! 🎉\n*(Bro nghĩ mình sống thọ nhất thế giới 💀☠️🗣️🔥)*`)
-                .setTimestamp();
-        }
-        else {
-            return new EmbedBuilder()
-                .setColor(0x00FF00)
-                .setTitle('✅ Kết Quả')
-                .setDescription(`# Bạn hiện tại **${age} tuổi**, <@${user.id}>! 🎉`)
-                .setTimestamp();
-        }
+        let returnDescription : string;
+        if (age === 0)
+            returnDescription = `# Bạn hiện tại **${age} tuổi**, <@${user.id}>! 🎉\n*(Anh bạn còn chưa cai sữa mẹ 🍼💀💀☠️)*`;
+        else if (age === 122)
+            returnDescription = `# Bạn hiện tại **${age} tuổi**, <@${user.id}>! 🎉\n*(Bro nghĩ mình sống thọ nhất thế giới 💀☠️🗣️🔥)*`;
+        else
+            returnDescription = `# Bạn hiện tại **${age} tuổi**, <@${user.id}>! 🎉`;
+
+        return new EmbedBuilder()
+            .setColor(0x00FF00)
+            .setTitle('✅ Kết Quả')
+            .setDescription(returnDescription)
+            .setTimestamp();
+    }
+
+    // Tinh lai tuoi da nhap (may con ga thi biet cai j)
+    private calculateAgain(count: number, age: number, user: User): EmbedBuilder {
+        return new EmbedBuilder()
+            .setColor(0x00FFFF)
+            .setTitle('✅ Kết Quả Tính Lại')
+            .setDescription(`Bạn đã nhấn cái nút này **${count}** lần, tuổi của bạn vẫn là **${age}** tuổi, <@${user.id}>!`)
+            .setTimestamp();
     }
 }
