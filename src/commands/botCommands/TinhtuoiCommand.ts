@@ -251,7 +251,7 @@ export class TinhtuoiCommand extends Command {
                             });
                             count++;
                         } catch (error) {
-                            console.error('Lỗi khi xử lý nút Tính lại:', error);
+                            console.error('⚠️ Lỗi khi xử lý nút Tính lại:', error);
                             throw error;
                         }
                     });

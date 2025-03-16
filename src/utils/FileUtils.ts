@@ -1,4 +1,4 @@
-import { Message, ChatInputCommandInteraction, MessageComponentInteraction, ModalSubmitInteraction, EmbedBuilder } from 'discord.js';
+import { Message, ChatInputCommandInteraction, MessageComponentInteraction, ModalSubmitInteraction, EmbedBuilder, AttachmentBuilder } from 'discord.js';
 import type { Interaction } from 'discord.js';
 import fs from 'fs/promises';
 import path from 'path';
@@ -26,14 +26,80 @@ export class FileUtils {
         }
 
         const embed = this.createEmbed(filePath, content);
-        if (customMessage) {
+        if (customMessage)
             await this.reply(interactionOrMessage, customMessage, embed);
-        } else {
+        else
             await this.reply(interactionOrMessage, '', embed);
-        }
     }
 
-    // Ham tao tin nhan Embed (neu can dung)
+    static async sendMedia(
+        interactionOrMessage: Message | Interaction,
+        mediaFileName: string,
+        content?: string,
+        embed?: EmbedBuilder,
+        components?: any[]
+    ): Promise<Message> {
+        const mediaPath = path.resolve(__dirname, '../commands/botCommands/dataFiles/media/memeSayGex', mediaFileName);
+        
+        try {
+            await fs.access(mediaPath);
+        } catch (error) {
+            console.error(`⚠️ File ${mediaFileName} không tồn tại trong thư mục media:`, error);
+            throw new Error(`File ${mediaFileName} không tồn tại!`);
+        }
+
+        const attachment = new AttachmentBuilder(mediaPath, { name: mediaFileName });
+        const messageOptions: any = {
+            files: [attachment],
+        };
+
+        if (content)
+            messageOptions.content = content;
+        if (embed)
+            messageOptions.embeds = [embed];
+        if (components)
+            messageOptions.components = components;
+
+        let response: Message;
+        if (interactionOrMessage instanceof Message)
+            response = await interactionOrMessage.reply(messageOptions) as Message;
+        else if (interactionOrMessage instanceof ChatInputCommandInteraction || interactionOrMessage instanceof MessageComponentInteraction || interactionOrMessage instanceof ModalSubmitInteraction) {
+            await interactionOrMessage.reply(messageOptions);
+            response = await interactionOrMessage.fetchReply();
+        } else
+            throw new Error('Loại Interaction này không hỗ trợ reply hoặc fetchReply!');
+
+        return response;
+    }
+
+    // Random meme my den saygex
+    static async sendRandomSayGexMedia(
+        interactionOrMessage: Message | Interaction,
+        content?: string,
+        embed?: EmbedBuilder,
+        components?: any[]
+    ): Promise<Message> {
+        const mediaDir = path.resolve(__dirname, '../commands/botCommands/dataFiles/media/memeSayGex');
+        let files: string[];
+        
+        try {
+            files = await fs.readdir(mediaDir);
+        } catch (error) {
+            console.error('⚠️ Lỗi khi đọc thư mục media:', error);
+            throw new Error('Không thể đọc thư mục media!');
+        }
+
+        // Loc dinh dang cac file
+        const mediaFiles = files.filter(file => /\.(jpg|png|gif|mp4|mov)$/i.test(file));
+        if (mediaFiles.length === 0)
+            throw new Error('⚠️ Không có file media nào trong thư mục!');
+
+        // Chon ngau nhien 1 file
+        const randomFile = mediaFiles[Math.floor(Math.random() * mediaFiles.length)];
+        return this.sendMedia(interactionOrMessage, randomFile, content, embed, components);
+    }
+
+    // Phuong thuc tao tin nhan Embed (neu can dung)
     private static createEmbed(title: string, content: string): EmbedBuilder {
         let truncatedContent: string;
     
@@ -66,11 +132,7 @@ export class FileUtils {
             embedsArray.push(embed);
         const options = { content: message, embeds: embedsArray };
     
-        if (
-            interactionOrMessage instanceof ChatInputCommandInteraction ||
-            interactionOrMessage instanceof MessageComponentInteraction ||
-            interactionOrMessage instanceof ModalSubmitInteraction
-        ) {
+        if (interactionOrMessage instanceof ChatInputCommandInteraction || interactionOrMessage instanceof MessageComponentInteraction || interactionOrMessage instanceof ModalSubmitInteraction) {
             if (interactionOrMessage.replied || interactionOrMessage.deferred)
                 await interactionOrMessage.followUp({ ...options, flags: 64 });
             else

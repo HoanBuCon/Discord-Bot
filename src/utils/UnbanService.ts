@@ -34,8 +34,13 @@ export class UnbanService {
                     await UnbanService.unbanUser(client, userId, guildId, banData);
                 } else {
                     setTimeout(async () => {
-                        if (!BanDataManager.isUserBanned(userId, guildId)) return;
-                        await UnbanService.unbanUser(client, userId, guildId, banData);
+                        const banCheck = await guild.bans.fetch(userId).catch(() => null);
+                        if (banCheck) {
+                            await UnbanService.unbanUser(client, userId, guildId, banData);
+                        } else {
+                            console.log(`🚫 Người dùng ${userId} không còn bị Ban trên server ${guild.name} khi timeout kết thúc!`);
+                            await BanDataManager.removeBanData(userId, guildId, client);
+                        }
                     }, timeRemaining);
                 }
             }
@@ -91,7 +96,6 @@ export class UnbanService {
                     }
                 } catch (error) {
                     console.error(`⚠️ Không thể gửi thông báo Unban cho ${userId} trong guild ${guildId}:`, error);
-                    throw error;
                 }
             }
         } catch (error) {
@@ -105,7 +109,6 @@ export class UnbanService {
             } else {
                 console.error(`⚠️ Lỗi không xác định khi Unban ${userId} ở server ${guildId}:`, error);
             }
-            throw error;
         }
     }
 
