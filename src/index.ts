@@ -33,7 +33,7 @@ const slashHandler = new SlashHandler(commandHandler);
 client.once('ready', async () => {
     console.log(`✅ Bot đã đăng nhập thành công với tên: ${client.user?.tag}`);
     
-    //await deployer.registerCommands(); // NEU DA DANG KY SLASH TRUOC DO THI COMMENT DONG NAY LAI
+    await deployer.registerCommands(); // NEU DA DANG KY SLASH TRUOC DO THI COMMENT DONG NAY LAI
 
     client.user?.setActivity('mẹ bạn', { type: ActivityType.Playing });
     client.user?.setStatus('online');

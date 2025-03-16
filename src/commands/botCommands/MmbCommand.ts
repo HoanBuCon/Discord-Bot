@@ -44,6 +44,14 @@ export class MmbCommand extends Command {
             return;
         }
 
-        await interactionOrMessage.reply(`${mentionText}\n${fileContent}`);
+        try {
+            await FileUtils.sendRandomMmbMedia(interactionOrMessage, `${mentionText}\n${fileContent}`);
+        } catch (error) {
+            console.error('⚠️ Lỗi khi gửi media cho MmbCommand:', error);
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: '⚠️ Không thể gửi media hoặc nội dung!', flags: 64 });
+            else
+                await interactionOrMessage.reply('⚠️ Không thể gửi media hoặc nội dung!');
+        }
     }
 }

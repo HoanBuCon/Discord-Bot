@@ -35,11 +35,12 @@ export class FileUtils {
     static async sendMedia(
         interactionOrMessage: Message | Interaction,
         mediaFileName: string,
+        mediaDir: string,
         content?: string,
         embed?: EmbedBuilder,
         components?: any[]
     ): Promise<Message> {
-        const mediaPath = path.resolve(__dirname, '../commands/botCommands/dataFiles/media/memeSayGex', mediaFileName);
+        const mediaPath = path.resolve(__dirname, mediaDir, mediaFileName);
         
         try {
             await fs.access(mediaPath);
@@ -72,6 +73,7 @@ export class FileUtils {
         return response;
     }
 
+    // CHU Y: 3 PHUONG THUC RANDOM MEDIA BEN DUOI TOI TACH RIENG THAY VI GOP LAI DE SAU NAY TUY CHINH RIENG CHO TUNG LENH DE DANG HON
     // Random meme my den saygex
     static async sendRandomSayGexMedia(
         interactionOrMessage: Message | Interaction,
@@ -85,7 +87,7 @@ export class FileUtils {
         try {
             files = await fs.readdir(mediaDir);
         } catch (error) {
-            console.error('⚠️ Lỗi khi đọc thư mục media:', error);
+            console.error('⚠️ Lỗi khi đọc thư mục memeSayGex:', error);
             throw new Error('Không thể đọc thư mục media!');
         }
 
@@ -96,7 +98,61 @@ export class FileUtils {
 
         // Chon ngau nhien 1 file
         const randomFile = mediaFiles[Math.floor(Math.random() * mediaFiles.length)];
-        return this.sendMedia(interactionOrMessage, randomFile, content, embed, components);
+        return this.sendMedia(interactionOrMessage, randomFile, mediaDir, content, embed, components);
+    }
+
+    // Random meme cho SuaCommand
+    static async sendRandomSuaMedia(
+        interactionOrMessage: Message | Interaction,
+        content?: string,
+        embed?: EmbedBuilder,
+        components?: any[]
+    ): Promise<Message> {
+        const mediaDir = path.resolve(__dirname, '../commands/botCommands/dataFiles/media/suaCommandMeme');
+        let files: string[];
+        
+        try {
+            files = await fs.readdir(mediaDir);
+        } catch (error) {
+            console.error('⚠️ Lỗi khi đọc thư mục suaCommandMeme:', error);
+            throw new Error('Không thể đọc thư mục media!');
+        }
+
+        // Loc dinh dang cac file
+        const mediaFiles = files.filter(file => /\.(jpg|png|gif|mp4|mov)$/i.test(file));
+        if (mediaFiles.length === 0)
+            throw new Error('⚠️ Không có file media nào trong thư mục suaCommandMeme!');
+
+        // Chon ngau nhien 1 file
+        const randomFile = mediaFiles[Math.floor(Math.random() * mediaFiles.length)];
+        return this.sendMedia(interactionOrMessage, randomFile, mediaDir, content, embed, components);
+    }
+
+    // Random meme cho MmbCommand
+    static async sendRandomMmbMedia(
+        interactionOrMessage: Message | Interaction,
+        content?: string,
+        embed?: EmbedBuilder,
+        components?: any[]
+    ): Promise<Message> {
+        const mediaDir = path.resolve(__dirname, '../commands/botCommands/dataFiles/media/mmbCommandMeme');
+        let files: string[];
+        
+        try {
+            files = await fs.readdir(mediaDir);
+        } catch (error) {
+            console.error('⚠️ Lỗi khi đọc thư mục mmbCommandMeme:', error);
+            throw new Error('Không thể đọc thư mục media!');
+        }
+
+        // Loc dinh dang cac file
+        const mediaFiles = files.filter(file => /\.(jpg|png|gif|mp4|mov)$/i.test(file));
+        if (mediaFiles.length === 0)
+            throw new Error('⚠️ Không có file media nào trong thư mục mmbCommandMeme!');
+
+        // Chon ngau nhien 1 file
+        const randomFile = mediaFiles[Math.floor(Math.random() * mediaFiles.length)];
+        return this.sendMedia(interactionOrMessage, randomFile, mediaDir, content, embed, components);
     }
 
     // Phuong thuc tao tin nhan Embed (neu can dung)
