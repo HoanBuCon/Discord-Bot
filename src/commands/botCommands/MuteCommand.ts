@@ -127,7 +127,6 @@ export class MuteCommand extends Command {
     }
 
     private getDuration(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): number | null {
-        let duration: number | null = null;
         let input: string | null = null;
     
         if ('options' in interactionOrMessage)

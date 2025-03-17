@@ -32,6 +32,7 @@ export class FileUtils {
             await this.reply(interactionOrMessage, '', embed);
     }
 
+    // Phuong thuc gui Media (dung chung cho nhieu lenh, lenh nao khong can dung thi ke me no <("))
     static async sendMedia(
         interactionOrMessage: Message | Interaction,
         mediaFileName: string,
@@ -74,28 +75,28 @@ export class FileUtils {
     }
 
     // CHU Y: 3 PHUONG THUC RANDOM MEDIA BEN DUOI TOI TACH RIENG THAY VI GOP LAI DE SAU NAY TUY CHINH RIENG CHO TUNG LENH DE DANG HON
-    // Random meme my den saygex
-    static async sendRandomSayGexMedia(
+    // Random Media (dung chung neu can) (HIEN TAI KHONG CO LENH NAO DUNG PHUONG THUC NAY)
+    static async sendRandomMedia(
         interactionOrMessage: Message | Interaction,
         content?: string,
         embed?: EmbedBuilder,
         components?: any[]
     ): Promise<Message> {
-        const mediaDir = path.resolve(__dirname, '../commands/botCommands/dataFiles/media/memeSayGex');
+        const mediaDir = path.resolve(__dirname, '../commands/botCommands/dataFiles/media/memeSayGex'); // Thay doi duong dan folder media neu dung den
         let files: string[];
-        
+    
         try {
             files = await fs.readdir(mediaDir);
         } catch (error) {
             console.error('⚠️ Lỗi khi đọc thư mục memeSayGex:', error);
             throw new Error('Không thể đọc thư mục media!');
         }
-
+    
         // Loc dinh dang cac file
         const mediaFiles = files.filter(file => /\.(jpg|png|gif|mp4|mov)$/i.test(file));
         if (mediaFiles.length === 0)
             throw new Error('⚠️ Không có file media nào trong thư mục!');
-
+    
         // Chon ngau nhien 1 file
         const randomFile = mediaFiles[Math.floor(Math.random() * mediaFiles.length)];
         return this.sendMedia(interactionOrMessage, randomFile, mediaDir, content, embed, components);
@@ -153,6 +154,25 @@ export class FileUtils {
         // Chon ngau nhien 1 file
         const randomFile = mediaFiles[Math.floor(Math.random() * mediaFiles.length)];
         return this.sendMedia(interactionOrMessage, randomFile, mediaDir, content, embed, components);
+    }
+
+    // Phuong thuc random meme (chi hoat dong voi SaygexmemeCommand.ts)
+    static async getRandomSayGexFile(): Promise<{ fileName: string }> {
+        const mediaDir = path.resolve(__dirname, '../commands/botCommands/dataFiles/media/memeSayGex');
+
+        try {
+            const files = await fs.readdir(mediaDir);
+            const mediaFiles = files.filter(file => /\.(jpg|png|gif|mp4|mov)$/i.test(file));
+
+            if (mediaFiles.length === 0)
+                throw new Error('⚠️ Không có file media nào trong thư mục memeSayGex!');
+
+            const randomFile = mediaFiles[Math.floor(Math.random() * mediaFiles.length)];
+            return { fileName: randomFile };
+        } catch (error) {
+            console.error('⚠️ Lỗi khi đọc thư mục memeSayGex:', error);
+            throw new Error('Không thể đọc thư mục media!');
+        }
     }
 
     // Phuong thuc tao tin nhan Embed (neu can dung)

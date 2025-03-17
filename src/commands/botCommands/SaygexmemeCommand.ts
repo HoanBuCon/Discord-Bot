@@ -1,4 +1,3 @@
-// src/commands/botCommands/SuaCommand.ts
 import { ChatInputCommandInteraction, Message, GuildMember } from 'discord.js';
 import { Command } from '../Command';
 import { PermissionUtils } from '../../utils/PermissionUtils';
@@ -15,6 +14,7 @@ export class SaygexmemeCommand extends Command {
         let user = permissions.getMentionedUser(interactionOrMessage, args);
         let member: GuildMember | null;
         
+        // Xac dinh doi tuong thuc thi lenh
         if (interactionOrMessage instanceof Message)
             member = interactionOrMessage.member;
         else
@@ -28,6 +28,7 @@ export class SaygexmemeCommand extends Command {
             return;
         }
 
+        // Neu khong mention User nao thi lay chinh nguoi su dung lenh
         if (!user) {
             if (interactionOrMessage instanceof Message)
                 user = interactionOrMessage.author;
@@ -35,14 +36,34 @@ export class SaygexmemeCommand extends Command {
                 user = interactionOrMessage.user;
         }
 
+        const mentionText = `<@${user.id}>`;
+
         try {
-            await FileUtils.sendRandomSayGexMedia(interactionOrMessage, `# im lang nao co be xam lul ${user} 🤫🧏‍♂️🗿`);
+            const mediaDir = '../commands/botCommands/dataFiles/media/memeSayGex';
+            const { fileName } = await FileUtils.getRandomSayGexFile();
+            const titleMap: { [key: string]: string } = {
+                'nig_loud.mp4': `# This had me in tears ${mentionText} 💔😔`,
+                'israel_gun.mp4': `# Israeli soldier died fighting for his country ${mentionText} 🫡😭`,
+                'uwu_niisan.mov': `# UwU ${mentionText}-sama! 🫦🍆`,
+                'ineedmorebullets.mp4': `# The brave French soldier try to give you his last bullets ${mentionText} 🫡😭`,
+                'nig_miko.mp4': `# Toi quen biet em giua mot dem that tinh co ${mentionText}💘🌹`,
+                'death_battle_meme.mp4': `# This battle will be legendary! ${mentionText} 🗣️🔥`,
+                'chuyen_di_ninh_binh_Myden.mp4': `# Do la mot ky niem dep ${mentionText} 💖😔`,
+                'my_den_tra_tan.mp4': `# Toi se ke lai trai nghiem khong the quen cua toi ${mentionText}🥶`,
+                'anh_ba_linh_duc.mp4': `# This had me in tears ${mentionText} 🫡😭`,
+                'bun_da_rau_ma.mp4': `# Cậu Năm đang làm gì vậy ${mentionText} 🥶`,
+                'ca_can_cu.mp4': `# Chú Tư bị sao vậy dude ${mentionText} 🥶`,
+                'are_are.mp4': `# Này cô nương dễ thương ${mentionText} 🫦🌹`,
+                'chu_no_Bac_Giang.mp4': `# Vu nay gan nha t ${mentionText} 🥶`,
+                'anh_la_ngoai_le.mov': `# 🫦🌹 ${mentionText}`,
+                'sao_minh_chua_nam_tay_nhau.mov': `# 🫦🌹 ${mentionText}`,
+                'dung_nhin.jpg': `Yare yare ~ co nuong de thuong ${mentionText} 🫦`
+            };
+            const title = titleMap[fileName] || `# im lang nao co be xam lul ${mentionText} 🤫🧏‍♂️🗿`;
+            await FileUtils.sendMedia(interactionOrMessage, fileName, mediaDir, title);
         } catch (error) {
             console.error('⚠️ Lỗi khi gửi meme:', error);
-            if (interactionOrMessage instanceof ChatInputCommandInteraction)
-                await interactionOrMessage.reply({ content: '⚠️ Không thể gửi meme!', flags: 64 });
-            else
-                await interactionOrMessage.reply('⚠️ Không thể gửi meme!');
+            await interactionOrMessage.reply('⚠️ Không thể gửi meme!');
         }
     }
 }
