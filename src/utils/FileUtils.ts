@@ -42,36 +42,32 @@ export class FileUtils {
         components?: any[]
     ): Promise<Message> {
         const mediaPath = path.resolve(__dirname, mediaDir, mediaFileName);
-        
+    
         try {
             await fs.access(mediaPath);
         } catch (error) {
             console.error(`⚠️ File ${mediaFileName} không tồn tại trong thư mục media:`, error);
             throw new Error(`File ${mediaFileName} không tồn tại!`);
         }
-
+    
         const attachment = new AttachmentBuilder(mediaPath, { name: mediaFileName });
-        const messageOptions: any = {
-            files: [attachment],
-        };
-
-        if (content)
-            messageOptions.content = content;
-        if (embed)
-            messageOptions.embeds = [embed];
-        if (components)
-            messageOptions.components = components;
-
-        let response: Message;
+        const messageOptions: any = { files: [attachment], };
+    
+        if (content) messageOptions.content = content;
+        if (embed) messageOptions.embeds = [embed];
+        if (components) messageOptions.components = components;
+    
         if (interactionOrMessage instanceof Message)
-            response = await interactionOrMessage.reply(messageOptions) as Message;
+            return await interactionOrMessage.reply(messageOptions);
         else if (interactionOrMessage instanceof ChatInputCommandInteraction || interactionOrMessage instanceof MessageComponentInteraction || interactionOrMessage instanceof ModalSubmitInteraction) {
-            await interactionOrMessage.reply(messageOptions);
-            response = await interactionOrMessage.fetchReply();
+            if (interactionOrMessage.deferred || interactionOrMessage.replied)
+                await interactionOrMessage.followUp(messageOptions);
+            else
+                await interactionOrMessage.reply(messageOptions);
+
+            return await interactionOrMessage.fetchReply();
         } else
             throw new Error('Loại Interaction này không hỗ trợ reply hoặc fetchReply!');
-
-        return response;
     }
 
     // CHU Y: 3 PHUONG THUC RANDOM MEDIA BEN DUOI TOI TACH RIENG THAY VI GOP LAI DE SAU NAY TUY CHINH RIENG CHO TUNG LENH DE DANG HON

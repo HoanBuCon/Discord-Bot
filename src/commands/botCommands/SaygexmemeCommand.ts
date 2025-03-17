@@ -39,6 +39,10 @@ export class SaygexmemeCommand extends Command {
         const mentionText = `<@${user.id}>`;
 
         try {
+            if (interactionOrMessage instanceof ChatInputCommandInteraction && !interactionOrMessage.deferred && !interactionOrMessage.replied) // Defer interaction neu la slash command de tranh timeout
+                await interactionOrMessage.deferReply();
+
+            // Tao 1 Hash Map (Object) de luu Title tuy chinh rieng cho meme
             const mediaDir = '../commands/botCommands/dataFiles/media/memeSayGex';
             const { fileName } = await FileUtils.getRandomSayGexFile();
             const titleMap: { [key: string]: string } = {
@@ -50,7 +54,7 @@ export class SaygexmemeCommand extends Command {
                 'ineedmorebullets.mp4': `# Brave French soldier try to give you his last bullets ${mentionText} 🫡😭`,
                 'nig_miko.mp4': `# Toi quen biet em giua mot dem that tinh co ${mentionText}💘🌹`,
                 'death_battle_meme.mp4': `# This battle will be legendary! ${mentionText} 🗣️🔥`,
-                'chuyen_di_ninh_binh_Myden.mp4': `# Do la mot ky niem dep ${mentionText} 💖😔`,
+                'chuyen_di_ninh_binh_Myden.mp4': `# Do la nhung ki niem dep ${mentionText} 💖😔`,
                 'my_den_tra_tan.mp4': `# Toi se ke lai trai nghiem khong the quen cua toi ${mentionText}🥶`,
                 'anh_ba_linh_duc.mp4': `# This had me in tears ${mentionText} 🫡😭`,
                 'bun_da_rau_ma.mp4': `# Cậu Năm đang làm gì vậy ${mentionText} 🥶`,
@@ -66,7 +70,7 @@ export class SaygexmemeCommand extends Command {
                 'kho_ngu_ricardo.mov': `# Oi oi ~ co nuong de thuong ${mentionText} 🫦`,
                 'giot_suong_goku_full.mov': `# This had me in tears ${mentionText} 💔😔`,
                 'giot_suong_goku_half.mov': `# This had me in tears ${mentionText} 💔😔`,
-                'ban_than_oi.mov': `# Duyên số sinh ra chúng mình ${mentionText} 💖🤝`,
+                'ban_than_oi.mov': `# Duyen so sinh ra chung minh ${mentionText} 💖🤝`,
                 'happy_new_year.mov': `# Nam moi da den, an khang thinh vuong ${mentionText} 💖🧧`,
                 'excuse_me.mov': `# Cai deo gi co ${mentionText} ?`,
                 'buoi_trua.mov': `# Chuc ca nha buoi trua an lanh ${mentionText} 🌹💖`
@@ -75,7 +79,12 @@ export class SaygexmemeCommand extends Command {
             await FileUtils.sendMedia(interactionOrMessage, fileName, mediaDir, title);
         } catch (error) {
             console.error('⚠️ Lỗi khi gửi meme:', error);
-            await interactionOrMessage.reply('⚠️ Không thể gửi meme!');
+            if (interactionOrMessage instanceof ChatInputCommandInteraction) {
+                if (interactionOrMessage.deferred || interactionOrMessage.replied)
+                    await interactionOrMessage.followUp({ content: '⚠️ Không thể gửi meme!', flags: 64 }).catch(console.error);
+                else
+                    await interactionOrMessage.reply({ content: '⚠️ Không thể gửi meme!', flags: 64 }).catch(console.error);
+            }
         }
     }
 }
