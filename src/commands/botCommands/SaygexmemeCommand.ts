@@ -43,9 +43,11 @@ export class SaygexmemeCommand extends Command {
             const { fileName } = await FileUtils.getRandomSayGexFile();
             const titleMap: { [key: string]: string } = {
                 'nig_loud.mp4': `# This had me in tears ${mentionText} 💔😔`,
+                'nig_sad_shower1.mov': `# This had me in tears ${mentionText} 💔😔`,
+                'nig_sad_shower2.mov': `# This had me in tears ${mentionText} 💔😔`,
                 'israel_gun.mp4': `# Israeli soldier died fighting for his country ${mentionText} 🫡😭`,
                 'uwu_niisan.mov': `# UwU ${mentionText}-sama! 🫦🍆`,
-                'ineedmorebullets.mp4': `# The brave French soldier try to give you his last bullets ${mentionText} 🫡😭`,
+                'ineedmorebullets.mp4': `# Brave French soldier try to give you his last bullets ${mentionText} 🫡😭`,
                 'nig_miko.mp4': `# Toi quen biet em giua mot dem that tinh co ${mentionText}💘🌹`,
                 'death_battle_meme.mp4': `# This battle will be legendary! ${mentionText} 🗣️🔥`,
                 'chuyen_di_ninh_binh_Myden.mp4': `# Do la mot ky niem dep ${mentionText} 💖😔`,
@@ -57,7 +59,17 @@ export class SaygexmemeCommand extends Command {
                 'chu_no_Bac_Giang.mp4': `# Vu nay gan nha t ${mentionText} 🥶`,
                 'anh_la_ngoai_le.mov': `# 🫦🌹 ${mentionText}`,
                 'sao_minh_chua_nam_tay_nhau.mov': `# 🫦🌹 ${mentionText}`,
-                'dung_nhin.jpg': `Yare yare ~ co nuong de thuong ${mentionText} 🫦`
+                'dung_nhin.jpg': `# Yare yare ~ co nuong de thuong ${mentionText} 🫦`,
+                'no_king.mov': `# Have u ever been fcked this gud? ${mentionText} 🫦`,
+                'yes_king.mov': `# Is that desk gud? ${mentionText} 🫦`,
+                'nguoi_xu_phan.mov': `# Cai deo gi co thang moi den ${mentionText} ?`,
+                'kho_ngu_ricardo.mov': `# Oi oi ~ co nuong de thuong ${mentionText} 🫦`,
+                'giot_suong_goku_full.mov': `# This had me in tears ${mentionText} 💔😔`,
+                'giot_suong_goku_half.mov': `# This had me in tears ${mentionText} 💔😔`,
+                'ban_than_oi.mov': `# Duyên số sinh ra chúng mình ${mentionText} 💖🤝`,
+                'happy_new_year.mov': `# Nam moi da den, an khang thinh vuong ${mentionText} 💖🧧`,
+                'excuse_me.mov': `# Cai deo gi co ${mentionText} ?`,
+                'buoi_trua.mov': `# Chuc ca nha buoi trua an lanh ${mentionText} 🌹💖`
             };
             const title = titleMap[fileName] || `# im lang nao co be xam lul ${mentionText} 🤫🧏‍♂️🗿`;
             await FileUtils.sendMedia(interactionOrMessage, fileName, mediaDir, title);
