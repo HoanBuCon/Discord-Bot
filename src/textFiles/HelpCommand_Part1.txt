@@ -1,0 +1,25 @@
+# I. GIỚI THIỆU
+> - Đây là dự án đầu tay của Hoàn Bự Con với mục tiêu tạo ra con bot siêu chôl lầy cho mọi người sử dụng 🐧
+> - Mã nguồn của Bot được public tại Github Repository: https://github.com/HoanBuCon/Discord-Bot
+- **Prefix** của Bot là `69!`
+- Bạn có thể sử dụng **lệnh Prefix** `69!help` hoặc **lệnh Slash** `/help` để xem thông tin chi tiết các lệnh
+
+# II. DANH SÁCH CÁC LỆNH
+## 1. Lệnh Tiện Ích
+- **`/help`**: Hiển thị hướng dẫn sử dụng Bot
+- **`/sua`**: Phản dmg con doggo vừa cắn bạn 🐧
+- **`/ongliem`**: Hỏi một người nào đó về ông Liêm
+- **`/memaybeo`**: Dùng khi có thằng chửi mẹ bạn 🐧
+- **`/saygex`**: Gửi meme mỹ đen lắc đít chôl lầy 🐧
+- **`/tinhtuoi`**: Máy tính tuổi thông minh
+- **`/donut`**: Gửi bánh Donut xoay tròn 🍩
+## 2. Lệnh Quản Trị
+- **`/kick`**: Đuổi thành viên khỏi máy chủ
+- **`/ban`**: Cấm thành viên khỏi máy chủ
+- **`/unban`**: Gỡ lệnh cấm thành viên khỏi máy chủ
+- **`/mute`**: Cấm chat thành viên trong máy chủ
+- **`/unmute`**: Gỡ lệnh cấm chat thành viên trong máy chủ
+## 3. Lệnh Minigame Tic Tac Toe
+- **`/tictactoe`**: Minigame Tic Tac Toe chơi PvP với thành viên trong máy chủ
+- **`/move`**: Lệnh đánh vào tọa độ chỉ định trong minigame Tic Tac Toe
+- **`/endtictactoe`**: Dừng trận đấu Tic Tac Toe đang diễn ra
