@@ -25,7 +25,10 @@ export class HelpCommand extends Command {
             return;
         }
 
-        // Gui noi dung file .txt duoi dang Embed Message
-        await FileUtils.sendFileContent(interactionOrMessage, 'helpCommand.txt');
+        if (interactionOrMessage instanceof ChatInputCommandInteraction && !interactionOrMessage.deferred && !interactionOrMessage.replied)
+            await interactionOrMessage.deferReply();
+
+        const isSlashCommand = interactionOrMessage instanceof ChatInputCommandInteraction;
+        await FileUtils.sendMultiFileContent(interactionOrMessage, ['HelpCommand_Part1.txt', 'HelpCommand_Part2.txt'], '', isSlashCommand, !isSlashCommand);
     }
 }

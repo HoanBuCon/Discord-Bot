@@ -64,7 +64,8 @@ export class CommandHandler {
         if (!command) {
             if (interactionOrMessage instanceof Message) {
                 await interactionOrMessage.reply('🚫 Tao đêl có lệnh đó 🫦');
-                await FileUtils.sendFileContent(interactionOrMessage, 'helpCommand.txt');
+                const isSlashCommand = interactionOrMessage instanceof ChatInputCommandInteraction;
+                await FileUtils.sendMultiFileContent(interactionOrMessage, ['HelpCommand_Part1.txt', 'HelpCommand_Part2.txt'], '', isSlashCommand, !isSlashCommand);
             }
             return;
         }
