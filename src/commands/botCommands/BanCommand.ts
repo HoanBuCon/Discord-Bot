@@ -21,7 +21,10 @@ export class BanCommand extends Command {
             member = interactionOrMessage.member as GuildMember;
 
         if (!guild || !member) {
-            await interactionOrMessage.reply({ content: '🚫 Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
+            else
+                await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
         }
 
