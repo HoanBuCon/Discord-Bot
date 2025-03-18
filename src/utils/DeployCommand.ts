@@ -152,6 +152,14 @@ export class DeployCommand {
                     option.setName('user')
                         .setDescription('Tính tuổi một người nào đó (không nhập = tính tuổi chính mình)')
                         .setRequired(false)),
+
+            new SlashCommandBuilder()
+                .setName('donut')
+                .setDescription('Gửi hiệu ứng bánh Donut xoay tròn 🍩')
+                .addUserOption(option => 
+                    option.setName('user')
+                        .setDescription('Chọn người bạn muốn gửi Donut🍩')
+                        .setRequired(false)),
         ].map(command => command.toJSON());
     }
 
