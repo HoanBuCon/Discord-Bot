@@ -26,17 +26,6 @@ export class SuaCommand extends Command {
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
-<<<<<<< HEAD
-        }
-
-        // Neu khong mention User nao thi lay chinh nguoi su dung lenh
-        if (!user) {
-            if (interactionOrMessage instanceof Message)
-                user = interactionOrMessage.author;
-            else
-                user = interactionOrMessage.user;
-=======
->>>>>>> origin/HBC
         }
 
         // Neu khong mention User nao thi lay chinh nguoi su dung lenh

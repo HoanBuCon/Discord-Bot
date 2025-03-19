@@ -251,12 +251,8 @@ export class TinhtuoiCommand extends Command {
                             });
                             count++;
                         } catch (error) {
-<<<<<<< HEAD
-                            console.error('Lỗi khi xử lý nút Tính lại:', error);
-=======
                             console.error('⚠️ Lỗi khi xử lý nút Tính lại:', error);
                             throw error;
->>>>>>> origin/HBC
                         }
                     });
             
@@ -311,8 +307,4 @@ export class TinhtuoiCommand extends Command {
             .setDescription(`Bạn đã nhấn cái nút này **${count}** lần, tuổi của bạn vẫn là **${age}** tuổi, <@${user.id}>!`)
             .setTimestamp();
     }
-<<<<<<< HEAD
-}   
-=======
 }
->>>>>>> origin/HBC
