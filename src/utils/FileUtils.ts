@@ -34,9 +34,9 @@ export class FileUtils {
         }
 
         const embed = this.createEmbed(filePath, content);
-        if (customMessage) {
+        if (customMessage)
             await this.reply(interactionOrMessage, customMessage, embed);
-        } else {
+        else
             await this.reply(interactionOrMessage, '', embed);
     }
 
