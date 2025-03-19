@@ -49,6 +49,14 @@ export class DeployCommand {
                         .setRequired(false)),
 
             new SlashCommandBuilder()
+                .setName('saygex')
+                .setDescription('Gửi meme mỹ đen lắc đít chôl lầy 🐧')
+                .addUserOption(option => 
+                    option.setName('user')
+                        .setDescription('Chọn người bạn muốn gửi meme')
+                        .setRequired(false)),
+
+            new SlashCommandBuilder()
                 .setName('ban')
                 .setDescription('Ban người dùng khỏi server')
                 .addUserOption(option => 

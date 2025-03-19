@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { ChatInputCommandInteraction, Message, GuildMember, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageComponentInteraction } from 'discord.js';
+=======
+import { ChatInputCommandInteraction, Message, GuildMember, EmbedBuilder, ComponentType, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageComponentInteraction } from 'discord.js';
+>>>>>>> origin/HBC
 import { Command } from '../Command';
 import { PermissionUtils } from '../../utils/PermissionUtils';
 
@@ -56,7 +60,11 @@ export class LiemCommand extends Command {
         // Build Embed
         const embed = new EmbedBuilder()
             .setColor('#0099ff')
+<<<<<<< HEAD
             .setTitle(`Biết ông Liêm không ? 👀`)
+=======
+            .setTitle(`👀 Biết ông Liêm không ?`)
+>>>>>>> origin/HBC
             .setDescription(`*(Đây là câu hỏi cực kỳ quan trọng!)*`)
             .setTimestamp();
             
@@ -79,14 +87,22 @@ export class LiemCommand extends Command {
             await interactionOrMessage.reply({ 
                 content: `Này cô nương dễ thương <@${user.id}>~!!`, 
                 embeds: [embed], 
+<<<<<<< HEAD
                 components: [buttons] 
+=======
+                components: [buttons],
+>>>>>>> origin/HBC
             });
             response = await interactionOrMessage.fetchReply();
         } else {
             response = await interactionOrMessage.reply({ 
                 content: `Này cô nương dễ thương <@${user.id}>~!!`, 
                 embeds: [embed], 
+<<<<<<< HEAD
                 components: [buttons] 
+=======
+                components: [buttons],
+>>>>>>> origin/HBC
             }) as Message;
         }
 
@@ -94,7 +110,12 @@ export class LiemCommand extends Command {
         const filter = (i: MessageComponentInteraction) => i.user.id === user!.id;
         const collector = response.createMessageComponentCollector({ 
             filter, 
+<<<<<<< HEAD
             time: 60000
+=======
+            time: 60000,
+            componentType: ComponentType.Button,
+>>>>>>> origin/HBC
         });
 
         collector.on('collect', async (interaction) => {
@@ -105,7 +126,24 @@ export class LiemCommand extends Command {
                         .setTitle('💦')
                         .setDescription(`# Liem 2 hon dai tao <@${user.id}> 🍆☢️☢️🫦💦`)
                     ],
+<<<<<<< HEAD
                     components: []
+=======
+                    components: [
+                        new ActionRowBuilder<ButtonBuilder>().addComponents(
+                            new ButtonBuilder()
+                                .setCustomId('liem_nao')
+                                .setLabel('Liêm nào ?')
+                                .setStyle(ButtonStyle.Primary)
+                                .setDisabled(true),
+                            new ButtonBuilder()
+                                .setCustomId('liem_dai')
+                                .setLabel('Liem 2 hon dai tao')
+                                .setStyle(ButtonStyle.Primary)
+                                .setDisabled(true)
+                        )
+                    ]
+>>>>>>> origin/HBC
                 });
             } else if (interaction.customId === 'liem_dai') {
                 await interaction.update({
@@ -114,7 +152,24 @@ export class LiemCommand extends Command {
                         .setTitle('🤬')
                         .setDescription(`# Sua con cac, <@${user.id}> 🤬🤬🌶️💢`)
                     ],
+<<<<<<< HEAD
                     components: []
+=======
+                    components: [
+                        new ActionRowBuilder<ButtonBuilder>().addComponents(
+                            new ButtonBuilder()
+                                .setCustomId('liem_nao')
+                                .setLabel('Liêm nào ?')
+                                .setStyle(ButtonStyle.Primary)
+                                .setDisabled(true),
+                            new ButtonBuilder()
+                                .setCustomId('liem_dai')
+                                .setLabel('Liem 2 hon dai tao')
+                                .setStyle(ButtonStyle.Primary)
+                                .setDisabled(true)
+                        )
+                    ]
+>>>>>>> origin/HBC
                 });
             }
         });

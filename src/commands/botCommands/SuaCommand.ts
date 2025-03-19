@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, Message, GuildMember } from 'discord.js';
 import { Command } from '../Command';
 import { PermissionUtils } from '../../utils/PermissionUtils';
+import { FileUtils } from '../../utils/FileUtils';
 
 export class SuaCommand extends Command {
     constructor() {
@@ -25,6 +26,17 @@ export class SuaCommand extends Command {
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
+<<<<<<< HEAD
+        }
+
+        // Neu khong mention User nao thi lay chinh nguoi su dung lenh
+        if (!user) {
+            if (interactionOrMessage instanceof Message)
+                user = interactionOrMessage.author;
+            else
+                user = interactionOrMessage.user;
+=======
+>>>>>>> origin/HBC
         }
 
         // Neu khong mention User nao thi lay chinh nguoi su dung lenh
@@ -35,6 +47,16 @@ export class SuaCommand extends Command {
                 user = interactionOrMessage.user;
         }
 
-        await interactionOrMessage.reply(`# Sua con cac, ${user} 🤫🧏‍♂️🗿`);
+        const fileContent = `# Sua con cac, <@${user.id}> 🤫🧏‍♂️🗿`;
+
+        try {
+            await FileUtils.sendRandomSuaMedia(interactionOrMessage, `${fileContent}`);
+        } catch (error) {
+            console.error('⚠️ Lỗi khi gửi media cho SuaCommand:', error);
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: '⚠️ Không thể gửi media!', flags: 64 });
+            else
+                await interactionOrMessage.reply('⚠️ Không thể gửi media!');
+        }
     }
 }

@@ -72,7 +72,7 @@ export class MuteCommand extends Command {
         try {
             const muteRole = await this.getMuteRole(guild);
             if (!muteRole) {
-                await interactionOrMessage.reply({ content: '⚠️ Không tìm thấy role "Muted"!', ephemeral: true });
+                await interactionOrMessage.reply({ content: '⚠️ Không tìm thấy role "Muted"!\n☢️ Vui lòng tạo role với tên chính xác là "Muted"!', ephemeral: true });
                 return;
             }
 
@@ -127,7 +127,6 @@ export class MuteCommand extends Command {
     }
 
     private getDuration(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): number | null {
-        let duration: number | null = null;
         let input: string | null = null;
     
         if ('options' in interactionOrMessage)

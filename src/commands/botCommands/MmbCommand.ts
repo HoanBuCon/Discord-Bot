@@ -37,13 +37,21 @@ export class MmbCommand extends Command {
         }
 
         const mentionText = `<@${user.id}>`;
-        const fileContent = await FileUtils.readFile('mmbCommand.txt');
+        const fileContent = await FileUtils.readFile('MmbCommand.txt');
 
         if (!fileContent) {
             await interactionOrMessage.reply('⚠️ Không thể đọc nội dung file!');
             return;
         }
 
-        await interactionOrMessage.reply(`${mentionText}\n${fileContent}`);
+        try {
+            await FileUtils.sendRandomMmbMedia(interactionOrMessage, `${mentionText}\n${fileContent}`);
+        } catch (error) {
+            console.error('⚠️ Lỗi khi gửi media cho MmbCommand:', error);
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: '⚠️ Không thể gửi media hoặc nội dung!', flags: 64 });
+            else
+                await interactionOrMessage.reply('⚠️ Không thể gửi media hoặc nội dung!');
+        }
     }
 }
