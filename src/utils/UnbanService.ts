@@ -1,4 +1,4 @@
-import { Client, TextChannel } from 'discord.js';
+import { ChatInputCommandInteraction, Client, TextChannel, EmbedBuilder, Guild } from 'discord.js';
 import { BanDataManager } from './BanDataManager';
 import type { BanData } from '../interfaces/IBaseData';
 
@@ -20,7 +20,7 @@ export class UnbanService {
 
                 const ban = await guild.bans.fetch(userId).catch(() => null);
                 if (!ban) {
-                    console.log(`⚠️ Người dùng ${userId} không bị ban trên server ${guild.name}.`);
+                    console.log(`🚫 Người dùng ${userId} không bị Ban trên server ${guild.name}.`);
                     await BanDataManager.removeBanData(userId, guildId, client);
                     continue;
                 }
@@ -34,8 +34,13 @@ export class UnbanService {
                     await UnbanService.unbanUser(client, userId, guildId, banData);
                 } else {
                     setTimeout(async () => {
-                        if (!BanDataManager.isUserBanned(userId, guildId)) return;
-                        await UnbanService.unbanUser(client, userId, guildId, banData);
+                        const banCheck = await guild.bans.fetch(userId).catch(() => null);
+                        if (banCheck) {
+                            await UnbanService.unbanUser(client, userId, guildId, banData);
+                        } else {
+                            console.log(`🚫 Người dùng ${userId} không còn bị Ban trên server ${guild.name} khi timeout kết thúc!`);
+                            await BanDataManager.removeBanData(userId, guildId, client);
+                        }
                     }, timeRemaining);
                 }
             }
@@ -43,8 +48,6 @@ export class UnbanService {
     }
 
     static async unbanUser(client: Client, userId: string, guildId: string, banData?: BanData, manual: boolean = false): Promise<void> {
-        if (!BanDataManager.isUserBanned(userId, guildId)) return;
-    
         const guild = client.guilds.cache.get(guildId);
         if (!guild) {
             await BanDataManager.removeBanData(userId, guildId, client);
@@ -52,19 +55,21 @@ export class UnbanService {
         }
     
         try {
+            // Fetch du lieu cua guild de kiem tra xem user co thuc su bi Ban khong
             const ban = await guild.bans.fetch(userId).catch(() => null);
             if (!ban) {
-                console.log(`⚠️ Người dùng ${userId} không bị ban trên server ${guild.name}.`);
+                console.log(`🚫 Người dùng ${userId} không bị Ban trên server ${guild.name}.`);
                 await BanDataManager.removeBanData(userId, guildId, client);
                 return;
             }
     
             await guild.members.unban(userId, 'Welcome back🤝');
-            console.log(`✅ Đã Unban ${userId} tại server ${guild.name}`);
+            console.log(`✅🔓 Đã Unban ${userId} tại server ${guild.name}`);
     
             const unbanData = await BanDataManager.removeBanData(userId, guildId, client);
     
-            if (manual) return;
+            if (manual)
+                return;
     
             const logChannel = guild.channels.cache.find(channel => channel.isTextBased());
             if ((unbanData?.messageId && unbanData?.channelId) && (logChannel && 'send' in logChannel)) {
@@ -96,8 +101,8 @@ export class UnbanService {
         } catch (error) {
             if (typeof error === 'object' && error !== null && 'code' in error) {
                 if (error.code === 10026) {
-                    console.log(`⚠️ Người dùng ${userId} không bị ban trên server ${guild.name}.`);
-                    await BanDataManager.removeBanData(userId, guildId, client); // Xóa dữ liệu
+                    console.log(`⚠️ Người dùng ${userId} không bị Ban trên server ${guild.name}.`);
+                    await BanDataManager.removeBanData(userId, guildId, client);
                 } else {
                     console.error(`⚠️ Lỗi khi Unban ${userId} ở server ${guildId}:`, error);
                 }
@@ -128,13 +133,96 @@ export class UnbanService {
         for (const userId of usersInGuild) {
             const banData = bannedUsers[userId][guildId];
             try {
-                await this.unbanUser(client, userId, guildId, banData, true); // manual: true để tránh gửi thông báo tự động
+                await this.unbanUser(client, userId, guildId, banData, true);
                 console.log(`✅🔓 Đã Unban ${userId} khỏi server ${guild.name}.`);
             } catch (error) {
                 console.error(`⚠️ Lỗi khi Unban ${userId} khỏi server ${guildId}:`, error);
+                throw error;
             }
         }
 
         console.log(`✅ Đã hoàn tất Unban tất cả (${usersInGuild.length}) người dùng trong server ${guild.name}.`);
+    }
+
+    static async createBannedListEmbed(guild: Guild): Promise<EmbedBuilder> {
+        const bans = await guild.bans.fetch();
+        if (bans.size === 0) {
+            return new EmbedBuilder()
+                .setTitle('📋 Danh sách thành viên bị Ban')
+                .setDescription('🚫 Hiện tại không có ai bị Ban trong server này!')
+                .setColor(0xff0000)
+                .setFooter({ text: 'Dùng lệnh sau để gỡ ban:\n🔹Lệnh Slash: /unban <userID>/<all>\n🔹Lệnh Prefix: 69!unban <userID>/<all>' });
+        }
+
+        const banList = bans.map(ban => `\`${ban.user.tag}\` | ID: **${ban.user.id}**`).join('\n');
+        let description = banList.slice(0, 4000);
+        if (banList.length > 4000) {
+            description += '...';
+        }
+
+        return new EmbedBuilder()
+            .setTitle('📋 Danh sách thành viên bị Ban')
+            .setDescription(description)
+            .setColor(0xff0000)
+            .setFooter({ text: 'Dùng lệnh sau để gỡ ban:\n🔹Lệnh Slash: /unban <userID>/<all>\n🔹Lệnh Prefix: 69!unban <userID>/<all>' });
+    }
+
+    static async handleUnbanCommand(interaction: ChatInputCommandInteraction, client: Client): Promise<void> {
+        await interaction.deferReply();
+
+        const guildId = interaction.guildId;
+        if (!guildId) {
+            await interaction.editReply('⚠️ Lệnh này chỉ có thể sử dụng trong server!');
+            return;
+        }
+
+        const userId = interaction.options.getString('userid');
+        const allOption = interaction.options.getString('all');
+        const guild = client.guilds.cache.get(guildId);
+
+        if (!guild) {
+            await interaction.editReply('⚠️ Không tìm thấy server!');
+            return;
+        }
+
+        if (userId) {
+            if (!/^\d{17,19}$/.test(userId)) {
+                await interaction.editReply('⚠️ ID người dùng không hợp lệ!');
+                return;
+            }
+
+            const ban = await guild.bans.fetch(userId).catch(() => null);
+            if (!ban) {
+                await interaction.editReply('🚫 Người dùng này không bị Ban!');
+                return;
+            }
+
+            await this.unbanUser(client, userId, guildId, undefined, true);
+            await interaction.editReply(`✅ Đã Unban người dùng với ID: ${userId}! 🔓`);
+        } 
+        else if (allOption === 'all') {
+            const bans = await guild.bans.fetch();
+            if (bans.size === 0) {
+                await interaction.editReply(`🚫 Không có người dùng nào bị Ban trong server ${guild.name}.`);
+                return;
+            }
+
+            let successCount = 0;
+            for (const ban of bans.values()) {
+                try {
+                    await this.unbanUser(client, ban.user.id, guildId, undefined, true);
+                    successCount++;
+                } catch (error) {
+                    console.error(`⚠️ Lỗi khi Unban ${ban.user.id} khỏi server ${guildId}:`, error);
+                    throw error;
+                }
+            }
+
+            await interaction.editReply(`✅ Đã Unban thành công ${successCount}/${bans.size} người dùng trong server ${guild.name}! 🔓`);
+        } 
+        else {
+            const embed = await this.createBannedListEmbed(guild);
+            await interaction.editReply({ embeds: [embed] });
+        }
     }
 }

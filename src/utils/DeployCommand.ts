@@ -33,11 +33,27 @@ export class DeployCommand {
                         .setRequired(false)),
 
             new SlashCommandBuilder()
+                .setName('ongliem')
+                .setDescription('Biết ông Liêm không ? 🐧')
+                .addUserOption(option => 
+                    option.setName('user')
+                        .setDescription('Chọn người để hỏi về ông Liêm')
+                        .setRequired(false)),
+
+            new SlashCommandBuilder()
                 .setName('memaybeo')
                 .setDescription('Phản Dmg khi có thằng chửi mẹ bạn 🐧')
                 .addUserOption(option => 
                     option.setName('user')
                         .setDescription('Chọn thằng vừa chửi mẹ bạn')
+                        .setRequired(false)),
+
+            new SlashCommandBuilder()
+                .setName('saygex')
+                .setDescription('Gửi meme mỹ đen lắc đít chôl lầy 🐧')
+                .addUserOption(option => 
+                    option.setName('user')
+                        .setDescription('Chọn người bạn muốn gửi meme')
                         .setRequired(false)),
 
             new SlashCommandBuilder()
@@ -57,8 +73,18 @@ export class DeployCommand {
                 .setDescription('Gỡ ban một người dùng khỏi server')
                 .addStringOption(option =>
                     option.setName('userid')
+<<<<<<< HEAD
                         .setDescription('ID của người dùng cần unban hoặc "all" để unban tất cả')
                         .setRequired(false)),
+=======
+                        .setDescription('ID của người dùng cần unban')
+                        .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('all')
+                        .setDescription('Unban tất cả người dùng')
+                        .setRequired(false)
+                        .addChoices({ name: 'all', value: 'all' })),
+>>>>>>> HBC
 
             new SlashCommandBuilder()
                 .setName('kick')
@@ -85,8 +111,18 @@ export class DeployCommand {
                 .setDescription('Gỡ Mute người dùng trong server')
                 .addUserOption(option =>
                     option.setName('user')
+<<<<<<< HEAD
                         .setDescription('Người dùng cần unmute hoặc "all" để unmute tất cả')
                         .setRequired(false)),
+=======
+                        .setDescription('Người dùng cần unmute')
+                        .setRequired(false))
+                .addStringOption(option =>
+                    option.setName('all')
+                        .setDescription('Unmute tất cả người dùng')
+                        .setRequired(false)
+                        .addChoices({ name: 'all', value: 'all' })),
+>>>>>>> HBC
 
             new SlashCommandBuilder()
                 .setName('tictactoe')
@@ -108,16 +144,35 @@ export class DeployCommand {
                 .setDescription('Đánh một nước đi đến tọa độ chỉ định trong Tic Tac Toe')
                 .addIntegerOption(option =>
                     option.setName('x')
-                        .setDescription('Tọa độ X (hàng)')
+                        .setDescription('Tọa độ X (cột)')
                         .setRequired(true))
                 .addIntegerOption(option =>
                     option.setName('y')
-                        .setDescription('Tọa độ Y (cột)')
+                        .setDescription('Tọa độ Y (hàng)')
                         .setRequired(true)),
 
             new SlashCommandBuilder()
                 .setName('endtictactoe')
                 .setDescription('Dừng trận đấu Tic Tac Toe đang diễn ra'),
+<<<<<<< HEAD
+=======
+
+            new SlashCommandBuilder()
+                .setName('tinhtuoi')
+                .setDescription('Máy tính tuổi thông minh')
+                .addUserOption(option => 
+                    option.setName('user')
+                        .setDescription('Tính tuổi một người nào đó (không nhập = tính tuổi chính mình)')
+                        .setRequired(false)),
+
+            new SlashCommandBuilder()
+                .setName('donut')
+                .setDescription('Gửi hiệu ứng bánh Donut xoay tròn 🍩')
+                .addUserOption(option => 
+                    option.setName('user')
+                        .setDescription('Chọn người bạn muốn gửi Donut🍩')
+                        .setRequired(false)),
+>>>>>>> HBC
         ].map(command => command.toJSON());
     }
 
@@ -132,6 +187,7 @@ export class DeployCommand {
             console.log('✅ Đăng ký lệnh Slash thành công!');
         } catch (error) {
             console.error('⚠️ Lỗi khi đăng ký lệnh Slash:', error);
+            throw error;
         }
     }
 }

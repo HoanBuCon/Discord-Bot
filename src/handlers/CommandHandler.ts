@@ -3,6 +3,7 @@ import type { ICommand } from '../interfaces/ICommand';
 import { FileUtils } from '../utils/FileUtils';
 import { HelpCommand } from '../commands/botCommands/HelpCommand';
 import { SuaCommand } from '../commands/botCommands/SuaCommand';
+import { LiemCommand } from '../commands/botCommands/LiemCommand';
 import { MmbCommand } from '../commands/botCommands/MmbCommand';
 import { KickCommand } from '../commands/botCommands/KickCommand';
 import { BanCommand } from '../commands/botCommands/BanCommand';
@@ -12,6 +13,12 @@ import { UnmuteCommand } from '../commands/botCommands/UnmuteCommand';
 import { TictactoeCommand } from '../commands/botCommands/TictactoeCommand';
 import { MoveCommand } from '../commands/botCommands/MoveEndCommand';
 import { EndTicTacToeCommand } from '../commands/botCommands/MoveEndCommand';
+<<<<<<< HEAD
+=======
+import { TinhtuoiCommand } from '../commands/botCommands/TinhtuoiCommand';
+import { SaygexmemeCommand } from '../commands/botCommands/SaygexmemeCommand';
+import { DonutCommand } from '../commands/botCommands/DonutCommand';
+>>>>>>> HBC
 
 export class CommandHandler {
     private commands: Map<string, ICommand>;
@@ -24,6 +31,7 @@ export class CommandHandler {
     private registerDefaultCommands(): void {
         this.registerCommand(new HelpCommand());
         this.registerCommand(new SuaCommand());
+        this.registerCommand(new LiemCommand(), 'liem');
         this.registerCommand(new MmbCommand(), 'mmb');
         this.registerCommand(new KickCommand());
         this.registerCommand(new BanCommand());
@@ -33,6 +41,12 @@ export class CommandHandler {
         this.registerCommand(new TictactoeCommand());
         this.registerCommand(new MoveCommand());
         this.registerCommand(new EndTicTacToeCommand());
+<<<<<<< HEAD
+=======
+        this.registerCommand(new TinhtuoiCommand());
+        this.registerCommand(new SaygexmemeCommand(), 'meme');
+        this.registerCommand(new DonutCommand());
+>>>>>>> HBC
     }
 
     private registerCommand(command: ICommand, alias?: string): void {
@@ -48,12 +62,22 @@ export class CommandHandler {
     }
 
     async handleCommand(interactionOrMessage: ChatInputCommandInteraction | Message, commandName: string, args?: string[]): Promise<void> {
-        console.log(`🔧 Xử lý lệnh: ${commandName}`);
+        let guild = null;
+
+        // Lay guild tu slash command hoac prefix command
+        if (interactionOrMessage instanceof ChatInputCommandInteraction)
+            guild = interactionOrMessage.guild;
+        else if (interactionOrMessage instanceof Message)
+            guild = interactionOrMessage.guild;
+
+        console.log(`🔧 Xử lý lệnh "${commandName}" tại server "${guild?.name}"`);
+
         const command = this.commands.get(commandName);
         if (!command) {
             if (interactionOrMessage instanceof Message) {
                 await interactionOrMessage.reply('🚫 Tao đêl có lệnh đó 🫦');
-                await FileUtils.sendFileContent(interactionOrMessage, 'helpCommand.txt');
+                const isSlashCommand = interactionOrMessage instanceof ChatInputCommandInteraction;
+                await FileUtils.sendMultiFileContent(interactionOrMessage, ['HelpCommand_Part1.txt', 'HelpCommand_Part2.txt'], '', isSlashCommand, !isSlashCommand);
             }
             return;
         }

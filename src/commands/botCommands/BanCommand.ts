@@ -21,7 +21,10 @@ export class BanCommand extends Command {
             member = interactionOrMessage.member as GuildMember;
 
         if (!guild || !member) {
-            await interactionOrMessage.reply({ content: '🚫 Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
+            else
+                await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
         }
 
@@ -37,7 +40,7 @@ export class BanCommand extends Command {
         }
 
         const targetUser = permissions.getMentionedUser(interactionOrMessage, args, true);
-        const duration = this.getDuration(interactionOrMessage, args) ?? 15;
+        const duration = this.getDuration(interactionOrMessage, args)
 
         if (!targetUser) {
             await interactionOrMessage.reply({ content: '⚠️ Hãy chỉ định một thành viên!', ephemeral: true });
@@ -49,7 +52,7 @@ export class BanCommand extends Command {
             return;
         }
 
-        if (duration <= 0) {
+        if (duration != null && duration <= 0) {
             await interactionOrMessage.reply({ content: '⚠️ Thời gian Ban không hợp lệ!', ephemeral: true });
             return;
         }
@@ -68,11 +71,11 @@ export class BanCommand extends Command {
 
         try {
             await guild.members.ban(targetUser, { reason: 'Goodbye bro!💔' });
-            const unbanTime = Date.now() + duration * 60 * 1000;
 
             let replyMessageId: string | null = null;
             let replyChannelId: string | null = interactionOrMessage.channelId ?? null;
 
+<<<<<<< HEAD
             const replyMessage = await interactionOrMessage.reply({ content: `✅ Đã Ban ${targetUser} trong **${duration}** phút! 🔒` });
             console.log(`✅ Đã Ban ${targetUser.tag} tại server ${guild.name}`);
 
@@ -84,31 +87,60 @@ export class BanCommand extends Command {
             } else if (interactionOrMessage instanceof Message) {
                 replyMessageId = replyMessage.id;
                 replyChannelId = interactionOrMessage.channel.id;
+=======
+            // Luu ID tin nhan
+            if (duration ===  null) {
+                const replyMessage = await interactionOrMessage.reply({ content: `✅ Đã Ban ${targetUser} vĩnh viễn! 🔒` });
+                console.log(`✅ Đã Ban ${targetUser.tag} tại server ${guild.name}`);
+            
+                if (interactionOrMessage instanceof ChatInputCommandInteraction) {
+                    const fetchedReply = await interactionOrMessage.fetchReply();
+                    replyMessageId = fetchedReply.id;
+                    replyChannelId = interactionOrMessage.channelId;
+                } else if (interactionOrMessage instanceof Message) {
+                    replyMessageId = replyMessage.id;
+                    replyChannelId = interactionOrMessage.channel.id;
+                }
+
+                if (replyMessageId && replyChannelId)
+                    BanDataManager.saveBanData(targetUser.id, guild.id, Infinity, replyMessageId, replyChannelId);
+
+            } else {
+                const unbanTime = Date.now() + duration * 60 * 1000;
+                const replyMessage = await interactionOrMessage.reply({ content: `✅ Đã Ban ${targetUser} trong **${duration}** phút! 🔒` });
+                console.log(`✅ Đã Ban ${targetUser.tag} tại server ${guild.name}`);
+
+                if (interactionOrMessage instanceof ChatInputCommandInteraction) {
+                    const fetchedReply = await interactionOrMessage.fetchReply();
+                    replyMessageId = fetchedReply.id;
+                    replyChannelId = interactionOrMessage.channelId;
+                } else if (interactionOrMessage instanceof Message) {
+                    replyMessageId = replyMessage.id;
+                    replyChannelId = interactionOrMessage.channel.id;
+                }
+
+                if (replyMessageId && replyChannelId)
+                    BanDataManager.saveBanData(targetUser.id, guild.id, unbanTime, replyMessageId, replyChannelId);
+
+                setTimeout(async () => {
+                    await UnbanService.unbanUser(interactionOrMessage.client as Client, targetUser.id, guild.id);
+                }, duration * 60 * 1000);
+>>>>>>> HBC
             }
-
-            if (replyMessageId && replyChannelId) {
-                BanDataManager.saveBanData(targetUser.id, guild.id, unbanTime, replyMessageId, replyChannelId);
-            }
-
-            setTimeout(async () => {
-                await UnbanService.unbanUser(interactionOrMessage.client as Client, targetUser.id, guild.id);
-            }, duration * 60 * 1000);
-
         } catch (error) {
             console.error('Lỗi khi ban:', error);
             await interactionOrMessage.reply({ content: '🚫 Không thể ban thành viên này!', ephemeral: true });
+            throw error;
         }
     }
 
     private getDuration(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): number | null {
-        let duration: number | null = null;
         let input: string | null = null;
 
-        if ('options' in interactionOrMessage) {
+        if ('options' in interactionOrMessage)
             input = interactionOrMessage.options.getString('duration', false);
-        } else if (args && args.length > 1) {
+        else if (args && args.length > 1)
             input = args[1];
-        }
 
         if (!input) return 7 * 24 * 60; // Mac dinh Ban 7 ngay
 

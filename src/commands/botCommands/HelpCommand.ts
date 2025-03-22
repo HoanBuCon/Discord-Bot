@@ -19,13 +19,25 @@ export class HelpCommand extends Command {
 
         if (!guild || !member) {
             if (interactionOrMessage instanceof ChatInputCommandInteraction)
+<<<<<<< HEAD
                 await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+=======
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
+>>>>>>> HBC
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
         }
 
+<<<<<<< HEAD
         // Gui noi dung file .txt duoi dang Embed Message
         await FileUtils.sendFileContent(interactionOrMessage, 'helpCommand.txt');
+=======
+        if (interactionOrMessage instanceof ChatInputCommandInteraction && !interactionOrMessage.deferred && !interactionOrMessage.replied)
+            await interactionOrMessage.deferReply();
+
+        const isSlashCommand = interactionOrMessage instanceof ChatInputCommandInteraction;
+        await FileUtils.sendMultiFileContent(interactionOrMessage, ['HelpCommand_Part1.txt', 'HelpCommand_Part2.txt'], '', isSlashCommand, !isSlashCommand);
+>>>>>>> HBC
     }
 }

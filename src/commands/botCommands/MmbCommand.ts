@@ -22,7 +22,11 @@ export class MmbCommand extends Command {
 
         if (!guild || !member) {
             if (interactionOrMessage instanceof ChatInputCommandInteraction)
+<<<<<<< HEAD
                 await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+=======
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
+>>>>>>> HBC
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
@@ -37,13 +41,21 @@ export class MmbCommand extends Command {
         }
 
         const mentionText = `<@${user.id}>`;
-        const fileContent = await FileUtils.readFile('mmbCommand.txt');
+        const fileContent = await FileUtils.readFile('MmbCommand.txt');
 
         if (!fileContent) {
             await interactionOrMessage.reply('⚠️ Không thể đọc nội dung file!');
             return;
         }
 
-        await interactionOrMessage.reply(`${mentionText}\n${fileContent}`);
+        try {
+            await FileUtils.sendRandomMmbMedia(interactionOrMessage, `${mentionText}\n${fileContent}`);
+        } catch (error) {
+            console.error('⚠️ Lỗi khi gửi media cho MmbCommand:', error);
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: '⚠️ Không thể gửi media hoặc nội dung!', flags: 64 });
+            else
+                await interactionOrMessage.reply('⚠️ Không thể gửi media hoặc nội dung!');
+        }
     }
 }

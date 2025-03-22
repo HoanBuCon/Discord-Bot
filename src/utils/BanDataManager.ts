@@ -1,16 +1,9 @@
 import { Client } from 'discord.js';
+import type { BanData } from '../interfaces/IBaseData';
 import fs from 'fs';
 import path from 'path';
 
 const BANNED_USERS_PATH = path.resolve(__dirname, '../commands/botCommands/dataFiles/commandData/bannedUsers.json');
-
-export interface BanData {
-    userId: string;
-    guildId: string;
-    unbanTime: number;
-    messageId?: string;
-    channelId?: string;
-}
 
 export class BanDataManager {
     static isUserBanned(userId: string, guildId: string): boolean {
@@ -19,7 +12,8 @@ export class BanDataManager {
     }
 
     static getBannedUsers(): Record<string, Record<string, BanData>> {
-        if (!fs.existsSync(BANNED_USERS_PATH)) return {};
+        if (!fs.existsSync(BANNED_USERS_PATH))
+            return {};
 
         try {
             const data = fs.readFileSync(BANNED_USERS_PATH, 'utf-8').trim();
@@ -36,7 +30,7 @@ export class BanDataManager {
     static saveBanData(userId: string, guildId: string, unbanTime: number, messageId?: string, channelId?: string): void {
         const bannedUsers = this.getBannedUsers();
 
-        if (!userId || !guildId || !unbanTime) {
+        if (!userId || !guildId) {
             console.error('⚠️ Dữ liệu Ban không hợp lệ:', { userId, guildId, unbanTime });
             return;
         }
@@ -82,6 +76,7 @@ export class BanDataManager {
             console.log('✅ Dữ liệu đã được cập nhật vào file bannedUsers.json.');
         } catch (error) {
             console.error('⚠️ Lỗi khi cập nhật file bannedUsers.json:', error);
+            throw error;
         }
     }
 }

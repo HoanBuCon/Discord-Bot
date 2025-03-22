@@ -1,0 +1,65 @@
+# III. HƯỚNG DẪN SỬ DỤNG
+## 1. Lệnh Tiện Ích
+### 1.1. **`/sua`**
+- Cấu trúc lệnh: `/sua <@user>`
+- Cấu trúc lệnh tự hủy: `/sua` *(không cần thêm user)*
+### 1.2. **`/ongliem`**
+- Cấu trúc lệnh: `/ongliem <@user>`
+- Cấu trúc lệnh viết tắt: `69!liem <@user>` *(lệnh viết tắt chỉ hoạt động với prefix)*
+- Cấu trúc lệnh tự hủy: `/ongliem` *(không cần thêm user, hoạt động được với lệnh viết tắt)*
+### 1.3. **`/memaybeo`**
+- Cấu trúc lệnh: `/memaybeo <@user>`
+- Cấu trúc lệnh viết tắt: `69!mmb <@user>` *(lệnh viết tắt chỉ hoạt động với prefix)*
+- Cấu trúc lệnh tự hủy: `/memaybeo` *(không cần thêm user, hoạt động được với lệnh viết tắt)*
+### 1.4. **`/saygex`**
+- Cấu trúc lệnh: `/saygex <@user>` *(Gửi meme mỹ đen cho đứa được chọn)*
+- Cấu trúc lệnh: `69!meme <@user>` *(lệnh viết tắt chỉ hoạt động với prefix)*
+- Cấu trúc lệnh tự tính tuổi: `/saygex` *(không cần thêm user, hoạt động được với lệnh viết tắt)*
+### 1.5. **`/tinhtuoi`**
+- Cấu trúc lệnh: `/tinhtuoi <@user>` *(Yêu cầu người khác sử dụng máy tính tuổi)*
+- Cấu trúc lệnh tự tính tuổi: `/tinhtuoi` *(không cần thêm user, bot sẽ tính tuổi cho mình)*
+### 1.6. **`/donut`**
+- Cấu trúc lệnh: `/donut <@user>` *(Gửi Donut cho người được chọn)*
+- Cấu trúc lệnh tự tặng Donut cho mình: `/donut` *(không cần thêm user, bot sẽ gửi cho mình)*
+## 2. Lệnh Quản Trị
+### 2.1. **`/kick`**
+- Cấu trúc lệnh: `/kick <@user>`
+### 2.2. **`/ban`**
+- Cấu trúc lệnh: `/ban <@user> <thời_gian_cấm> <đơn_vị_thời_gian>`
+- Quy ước đơn vị thời gian:
+> • **m**: Phút
+> • **h**: Giờ
+> • **d**: Ngày
+> • **inf**: Vĩnh viễn
+- Ví dụ:
+> `/ban @exampleUser 3d` *(ban người dùng exampleUser với thời gian 3 ngày)*
+> `/ban @exampleUser inf` *(ban người dùng exampleUser vĩnh viễn)*
+### 2.3. **`/unban`**
+- Cấu trúc lệnh: `/unban <userID>` *(unban người dùng được chỉ định)*
+- Cấu trúc lệnh: `/unban <all>` *(unban tất cả người dùng trong server)*
+- Hiển thị danh sách thành viên bị ban: `/unmute`
+- Lưu ý: Thông tin thành viên bị ban sẽ hiển thị trong danh sách *(Banlist)*
+### 2.3. **`/mute`**
+- Cấu trúc lệnh: `/mute <@user> <thời_gian_cấm> <đơn_vị_thời_gian>`
+- Quy ước đơn vị thời gian:
+> • **m**: Phút
+> • **h**: Giờ
+> • **d**: Ngày
+> • **inf**: Vĩnh viễn
+- Ví dụ:
+> `/mute @exampleUser 3d` *(mute người dùng exampleUser với thời gian 3 ngày)*
+> `/mute @exampleUser inf` *(mute người dùng exampleUser vĩnh viễn)*
+### 2.5. **`/unmute`**
+- Cấu trúc lệnh: `/unmute <@user>` *(unmute người dùng được chỉ định)*
+- Cấu trúc lệnh: `/unmute <all>` *(unmute tất cả người dùng trong server)*
+- Hiển thị danh sách thành viên bị mute: `/unmute`
+- Lưu ý: Thông tin thành viên bị mute sẽ hiển thị trong danh sách *(Mutelist)*
+## 3. Lệnh Minigame Tic Tac Toe
+### 3.1. **`/tictactoe`**
+- Cấu trúc lệnh: `/tictactoe <@user>`
+### 3.2. **`/move`**
+- Cấu trúc lệnh: `/move <tọa độ x> <tọa độ y>`
+- Ví dụ: `/move 1 2` để đánh vào tọa độ x = 1; y = 2
+- Lưu ý về giá trị tọa độ: Không nhập giá trị âm và giá trị thập phân
+### 3.3. **`/endtictactoe`**
+- Cấu trúc lệnh: `/endtictactoe`

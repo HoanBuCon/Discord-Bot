@@ -22,7 +22,11 @@ export class MuteCommand extends Command {
 
         if (!guild || !member) {
             if (interactionOrMessage instanceof ChatInputCommandInteraction)
+<<<<<<< HEAD
                 await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+=======
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
+>>>>>>> HBC
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
@@ -40,7 +44,7 @@ export class MuteCommand extends Command {
         }
 
         const targetUser = permissions.getMentionedUser(interactionOrMessage, args, true);
-        const duration = this.getDuration(interactionOrMessage, args) ?? 15;
+        const duration = this.getDuration(interactionOrMessage, args);
 
         if (!targetUser) {
             await interactionOrMessage.reply({ content: '⚠️ Hãy chỉ định một thành viên!', ephemeral: true });
@@ -52,7 +56,7 @@ export class MuteCommand extends Command {
             return;
         }
 
-        if (duration <= 0) {
+        if (duration != null && duration <= 0) {
             await interactionOrMessage.reply({ content: '⚠️ Thời gian Mute không hợp lệ!', ephemeral: true });
             return;
         }
@@ -72,19 +76,21 @@ export class MuteCommand extends Command {
         try {
             const muteRole = await this.getMuteRole(guild);
             if (!muteRole) {
-                await interactionOrMessage.reply({ content: '⚠️ Không tìm thấy role "Muted"!', ephemeral: true });
+                await interactionOrMessage.reply({ content: '⚠️ Không tìm thấy role "Muted"!\n☢️ Vui lòng tạo role với tên chính xác là "Muted"!', ephemeral: true });
                 return;
             }
 
             await targetMember.roles.add(muteRole);
-            const unmuteTime = Date.now() + duration * 60 * 1000;
 
             let replyMessageId: string | null = null;
             let replyChannelId: string | null = interactionOrMessage.channelId ?? null;
 
-            const replyMessage = await interactionOrMessage.reply({ content: `✅ Đã Mute ${targetUser} trong **${duration}** phút! 🔇` });
-            console.log(`✅ Đã Mute ${targetUser.tag} tại server ${guild.name}`);
+            // Luu ID tin nhan
+            if (duration ===  null) {
+                const replyMessage = await interactionOrMessage.reply({ content: `✅ Đã Mute ${targetUser} vĩnh viễn! 🔇` });
+                console.log(`✅ Đã Mute ${targetUser.tag} tại server ${guild.name}`);
 
+<<<<<<< HEAD
             // Luu ID tin nhan
             if (interactionOrMessage instanceof ChatInputCommandInteraction) {
                 const fetchedReply = await interactionOrMessage.fetchReply();
@@ -93,31 +99,55 @@ export class MuteCommand extends Command {
             } else if (interactionOrMessage instanceof Message) {
                 replyMessageId = replyMessage.id;
                 replyChannelId = interactionOrMessage.channel.id;
+=======
+                if (interactionOrMessage instanceof ChatInputCommandInteraction) {
+                    const fetchedReply = await interactionOrMessage.fetchReply();
+                    replyMessageId = fetchedReply.id;
+                    replyChannelId = interactionOrMessage.channelId;
+                } else if (interactionOrMessage instanceof Message) {
+                    replyMessageId = replyMessage.id;
+                    replyChannelId = interactionOrMessage.channel.id;
+                }
+
+                if (replyMessageId && replyChannelId)
+                    MuteDataManager.saveMuteData(targetUser.id, guild.id, Infinity, replyMessageId, replyChannelId, member.id);
+
+            } else {
+                const unmuteTime = Date.now() + duration * 60 * 1000;
+                const replyMessage = await interactionOrMessage.reply({ content: `✅ Đã Mute ${targetUser} trong **${duration}** phút! 🔇` });
+                console.log(`✅ Đã Mute ${targetUser.tag} tại server ${guild.name}`);
+
+                if (interactionOrMessage instanceof ChatInputCommandInteraction) {
+                    const fetchedReply = await interactionOrMessage.fetchReply();
+                    replyMessageId = fetchedReply.id;
+                    replyChannelId = interactionOrMessage.channelId;
+                } else if (interactionOrMessage instanceof Message) {
+                    replyMessageId = replyMessage.id;
+                    replyChannelId = interactionOrMessage.channel.id;
+                }
+
+                if (replyMessageId && replyChannelId)
+                    MuteDataManager.saveMuteData(targetUser.id, guild.id, unmuteTime, replyMessageId, replyChannelId, member.id);
+
+                setTimeout(async () => {
+                    await UnmuteService.unmuteUser(interactionOrMessage.client as Client, targetMember.id, guild.id);
+                }, duration * 60 * 1000);
+>>>>>>> HBC
             }
-
-            if (replyMessageId && replyChannelId) {
-                MuteDataManager.saveMuteData(targetMember.id, guild.id, unmuteTime, replyMessageId, replyChannelId);
-            }
-
-            setTimeout(async () => {
-                await UnmuteService.unmuteUser(interactionOrMessage.client as Client, targetMember.id, guild.id);
-            }, duration * 60 * 1000);
-
         } catch (error) {
             console.error('Lỗi khi mute:', error);
             await interactionOrMessage.reply({ content: '🚫 Không thể mute thành viên này!', ephemeral: true });
+            throw error;
         }
     }
 
     private getDuration(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): number | null {
-        let duration: number | null = null;
         let input: string | null = null;
     
-        if ('options' in interactionOrMessage) {
+        if ('options' in interactionOrMessage)
             input = interactionOrMessage.options.getString('duration', false);
-        } else if (args && args.length > 1) {
+        else if (args && args.length > 1)
             input = args[1];
-        }
     
         if (!input) return 15; // Mac dinh Mute 15 phut
     
@@ -134,12 +164,20 @@ export class MuteCommand extends Command {
                 case 'd': return value * 24 * 60;
             }
         }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> HBC
         return 15; // Mac dinh Ban 15 phut neu input khong hop le
     }
 
     // Phuong thuc lay role "Muted" va chuan hoa ve lowerCase
+<<<<<<< HEAD
     private async getMuteRole(guild: Guild): Promise<Role | null> {
+=======
+    async getMuteRole(guild: Guild): Promise<Role | null> {
+>>>>>>> HBC
         const muteRole = guild.roles.cache.find(role => role.name.toLowerCase() === 'muted');
         return muteRole || null;
     }

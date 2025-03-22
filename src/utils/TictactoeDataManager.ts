@@ -1,19 +1,10 @@
 import { TictactoeGameplay } from './TictactoeGameplay';
+import type { TictactoeData } from '../interfaces/IBaseData';
 
 import fs from 'fs';
 import path from 'path';
 
 const TICTACTOE_DATA_PATH = path.resolve(__dirname, '../commands/botCommands/dataFiles/commandData/tictactoeData.json');
-
-export interface TictactoeData {
-    userId1: string;
-    userId2: string;
-    guildId: string;
-    messageId?: string;
-    channelId?: string;
-    boardSize: number;
-    status: boolean;
-}
 
 export class TictactoeDataManager {
     private static activeGames: Map<string, TictactoeGameplay> = new Map();
@@ -59,10 +50,11 @@ export class TictactoeDataManager {
             console.log('✅ Dữ liệu TicTacToe đã được cập nhật.');
         } catch (error) {
             console.error('⚠️ Lỗi khi ghi vào tictactoeData.json:', error);
+            throw error;
         }
     }
 
-    static saveTictactoeData(userId1: string, userId2: string, guildId: string, messageId: string, channelId: string, boardSize: number): void {
+    static saveTictactoeData(userId1: string, userId2: string, guildId: string, messageId: string, channelId: string, player1Tag: string, player2Tag: string, boardSize: number): void {
         const games = this.getGames();
 
         if (!games[guildId]) {
@@ -70,7 +62,7 @@ export class TictactoeDataManager {
         }
 
         const gameId = `${userId1}-${userId2}`;
-        games[guildId][gameId] = { userId1, userId2, guildId, messageId, channelId, boardSize, status: true };
+        games[guildId][gameId] = { userId1, userId2, guildId, messageId, channelId, player1Tag, player2Tag, boardSize, status: true };
 
         this.writeGames(games);
     }
@@ -110,6 +102,7 @@ export class TictactoeDataManager {
             }
         } catch (error) {
             console.error('⚠️ Lỗi khi xóa dữ liệu TicTacToe:', error);
+            throw error;
         }
     }
 

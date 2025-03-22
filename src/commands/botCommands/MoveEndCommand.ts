@@ -10,8 +10,13 @@ export class MoveCommand extends Command {
     async execute(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): Promise<void> {
         const guild = interactionOrMessage.guild;
         let member: GuildMember | null;
+<<<<<<< HEAD
         let x: number;
         let y: number;
+=======
+        let x: number; // Cot
+        let y: number; // Hang
+>>>>>>> HBC
 
         // Xac dinh doi tuong thuc thi lenh
         if (interactionOrMessage instanceof Message)
@@ -21,7 +26,11 @@ export class MoveCommand extends Command {
 
         if (!guild || !member) {
             if (interactionOrMessage instanceof ChatInputCommandInteraction)
+<<<<<<< HEAD
                 await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+=======
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
+>>>>>>> HBC
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
@@ -30,7 +39,11 @@ export class MoveCommand extends Command {
          
         if (interactionOrMessage instanceof Message) { // Neu la lenh Prefix
             if (!args || args.length < 2) {
+<<<<<<< HEAD
                 await interactionOrMessage.reply({ content: '⚠️ Hãy nhập nước đi theo prefix `69!move x y`' });
+=======
+                await interactionOrMessage.reply({ content: '⚠️ Hãy nhập nước đi theo prefix `69!move x y` hoặc slash `/move x y`' });
+>>>>>>> HBC
                 return;
             }
             x = parseInt(args[0]);
@@ -41,7 +54,11 @@ export class MoveCommand extends Command {
         }
 
         if (isNaN(x) || isNaN(y) || x < 0 || y < 0) {
-            await interactionOrMessage.reply({ content: '🚫 Nước đi không hợp lệ! X và Y phải là số nguyên không âm.', ephemeral: true });
+            const replyContent = '🚫 Nước đi không hợp lệ! X và Y phải là số nguyên không âm.';
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: replyContent, flags: 64 });
+            else
+                await interactionOrMessage.reply(replyContent);
             return;
         }
 
@@ -54,27 +71,38 @@ export class MoveCommand extends Command {
 
         const gameInstance = TictactoeDataManager.getGameplayInstance(guildId);
         if (!gameInstance) {
-            await interactionOrMessage.reply({ content: '⚠️ Không tìm thấy ván chơi nào đang diễn ra.', ephemeral: true });
+            const replyContent = '⚠️ Không tìm thấy ván chơi nào đang diễn ra.';
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: replyContent, flags: 64 });
+            else
+                await interactionOrMessage.reply(replyContent);
             return;
         }
 
         if (!gameInstance.isPlayerTurn(playerId)) {
-            await interactionOrMessage.reply({ content: '🚫 Không phải lượt của bạn!', ephemeral: true });
+            const replyContent = '🚫 Không phải lượt của bạn!';
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: replyContent, flags: 64 });
+            else
+                await interactionOrMessage.reply(replyContent);
             return;
         }
 
         const moveResult = gameInstance.makeMove(playerId, x, y);
         if (!moveResult.success) {
-            await interactionOrMessage.reply({ content: moveResult.message, ephemeral: true });
+            const replyContent = moveResult.message;
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: replyContent, flags: 64 });
+            else
+                await interactionOrMessage.reply({ content: replyContent });
             return;
         }
-
         let responseMessage = moveResult.message;
 
         // Kiem tra trang thai của gameplay
         const gameStatus = gameInstance.checkGameStatus();
         if (gameStatus.ended) {
-            responseMessage += `\n🎉 Trò chơi kết thúc! ${gameStatus.message}`;
+            responseMessage += `\n🎉 Trò chơi kết thúc!\n${gameStatus.message}`;
             TictactoeDataManager.removeGameplayInstance(guildId);
         } else {
             gameInstance.switchTurn();
@@ -101,7 +129,11 @@ export class EndTicTacToeCommand extends Command {
 
         if (!guild || !member) {
             if (interactionOrMessage instanceof ChatInputCommandInteraction)
+<<<<<<< HEAD
                 await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
+=======
+                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
+>>>>>>> HBC
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
@@ -110,12 +142,17 @@ export class EndTicTacToeCommand extends Command {
 
         // Kiem tra xem co gameplay nao dang dien ra khong
         const gameInstance = TictactoeDataManager.getGameplayInstance(guildId);
+
         if (!gameInstance) {
-            await interactionOrMessage.reply({ content: '⚠️ Không có ván chơi nào để dừng.', ephemeral: true });
+            const replyContent = '⚠️ Không có ván chơi nào để dừng.';
+            if (interactionOrMessage instanceof ChatInputCommandInteraction)
+                await interactionOrMessage.reply({ content: replyContent, flags: 64 });
+            else
+                await interactionOrMessage.reply(replyContent);
             return;
         }
 
         TictactoeDataManager.removeGameplayInstance(guildId);
-        await interactionOrMessage.reply({ content: '🛑 Trò chơi đã bị dừng!' });
+        await interactionOrMessage.reply({ content: '🛑 Đã dừng trò chơi đang diễn ra!' });
     }
 }
