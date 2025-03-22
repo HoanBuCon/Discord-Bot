@@ -84,7 +84,8 @@ export class SaygexmemeCommand extends Command {
                     await interactionOrMessage.followUp({ content: '⚠️ Không thể gửi meme!', flags: 64 }).catch(console.error);
                 else
                     await interactionOrMessage.reply({ content: '⚠️ Không thể gửi meme!', flags: 64 }).catch(console.error);
-            }
+            } else
+                await interactionOrMessage.reply('⚠️ Không thể gửi meme!').catch(console.error);
         }
     }
 }
