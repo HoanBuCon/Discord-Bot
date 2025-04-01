@@ -20,11 +20,7 @@ export class KickCommand extends Command {
 
         if (!guild || !member) {
             if (interactionOrMessage instanceof ChatInputCommandInteraction)
-<<<<<<< HEAD
-                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
-=======
                 await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
->>>>>>> HBC
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
@@ -74,11 +70,7 @@ export class KickCommand extends Command {
         }
     }
 
-<<<<<<< HEAD
-    // Phuong thuc tich ich "Reply" dung de gui phan hoi cho lenh Prefix va Slash
-=======
     // Phuong thuc tien ich "Reply" dung de gui phan hoi cho lenh Prefix va Slash
->>>>>>> HBC
     private async reply(interactionOrMessage: ChatInputCommandInteraction | Message, message: string, ephemeral: boolean): Promise<void> {
         if (interactionOrMessage instanceof ChatInputCommandInteraction) {
             if (ephemeral)
@@ -87,9 +79,5 @@ export class KickCommand extends Command {
                 await interactionOrMessage.reply({ content: message });
         } else
             await interactionOrMessage.reply(message);
-<<<<<<< HEAD
-
-=======
->>>>>>> HBC
     }
 }

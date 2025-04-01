@@ -1,9 +1,6 @@
 import { ChatInputCommandInteraction, Client, GuildMember, TextChannel, EmbedBuilder, Guild } from 'discord.js';
 import { MuteDataManager } from './MuteDataManager';
-<<<<<<< HEAD
-=======
 import { MuteCommand } from '../commands/botCommands/MuteCommand';
->>>>>>> HBC
 import type { MuteData } from '../interfaces/IBaseData';
 
 export class UnmuteService {

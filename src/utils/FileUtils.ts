@@ -34,18 +34,10 @@ export class FileUtils {
         }
 
         const embed = this.createEmbed(filePath, content);
-<<<<<<< HEAD
-        if (customMessage) {
-            await this.reply(interactionOrMessage, customMessage, embed);
-        } else {
-            await this.reply(interactionOrMessage, '', embed);
-        }
-=======
         if (customMessage)
             await this.reply(interactionOrMessage, customMessage, embed);
         else
             await this.reply(interactionOrMessage, '', embed);
->>>>>>> HBC
     }
 
     static async sendMultiFileContent(
@@ -241,27 +233,6 @@ export class FileUtils {
         useEphemeral: boolean = false
     ): Promise<void> {
         if (interactionOrMessage instanceof Message) {
-<<<<<<< HEAD
-            let embedsArray = [];
-            if (embed)
-                embedsArray.push(embed);
-            await interactionOrMessage.reply({ content: message, embeds: embedsArray });
-            return;
-        }
-    
-        let embedsArray = [];
-        if (embed)
-            embedsArray.push(embed);
-        const options = { content: message, embeds: embedsArray };
-    
-        if (
-            interactionOrMessage instanceof ChatInputCommandInteraction ||
-            interactionOrMessage instanceof MessageComponentInteraction ||
-            interactionOrMessage instanceof ModalSubmitInteraction
-        ) {
-            if (interactionOrMessage.replied || interactionOrMessage.deferred)
-                await interactionOrMessage.followUp({ ...options, flags: 64 });
-=======
             let embedsArray: EmbedBuilder[] = [];
             if (embed) embedsArray.push(embed);
             await interactionOrMessage.reply({ content: message, embeds: embedsArray }); // Reply cho prefix command
@@ -282,7 +253,6 @@ export class FileUtils {
             }
             else if (interactionOrMessage.replied)
                 await interactionOrMessage.followUp(options); // Neu ra reply roi thi gui tiep
->>>>>>> HBC
             else
                 await interactionOrMessage.reply(options); // Default
         }

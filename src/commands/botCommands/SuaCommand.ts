@@ -22,25 +22,10 @@ export class SuaCommand extends Command {
 
         if (!guild || !member) {
             if (interactionOrMessage instanceof ChatInputCommandInteraction)
-<<<<<<< HEAD
-                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
-            else
-                await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
-            return;
-        }
-
-        // Neu khong mention User nao thi lay chinh nguoi su dung lenh
-        if (!user) {
-            if (interactionOrMessage instanceof Message)
-                user = interactionOrMessage.author;
-            else
-                user = interactionOrMessage.user;
-=======
                 await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
->>>>>>> HBC
         }
 
         // Neu khong mention User nao thi lay chinh nguoi su dung lenh

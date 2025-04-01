@@ -73,10 +73,6 @@ export class DeployCommand {
                 .setDescription('Gỡ ban một người dùng khỏi server')
                 .addStringOption(option =>
                     option.setName('userid')
-<<<<<<< HEAD
-                        .setDescription('ID của người dùng cần unban hoặc "all" để unban tất cả')
-                        .setRequired(false)),
-=======
                         .setDescription('ID của người dùng cần unban')
                         .setRequired(false))
                 .addStringOption(option =>
@@ -84,7 +80,6 @@ export class DeployCommand {
                         .setDescription('Unban tất cả người dùng')
                         .setRequired(false)
                         .addChoices({ name: 'all', value: 'all' })),
->>>>>>> HBC
 
             new SlashCommandBuilder()
                 .setName('kick')
@@ -111,10 +106,6 @@ export class DeployCommand {
                 .setDescription('Gỡ Mute người dùng trong server')
                 .addUserOption(option =>
                     option.setName('user')
-<<<<<<< HEAD
-                        .setDescription('Người dùng cần unmute hoặc "all" để unmute tất cả')
-                        .setRequired(false)),
-=======
                         .setDescription('Người dùng cần unmute')
                         .setRequired(false))
                 .addStringOption(option =>
@@ -122,7 +113,6 @@ export class DeployCommand {
                         .setDescription('Unmute tất cả người dùng')
                         .setRequired(false)
                         .addChoices({ name: 'all', value: 'all' })),
->>>>>>> HBC
 
             new SlashCommandBuilder()
                 .setName('tictactoe')
@@ -154,8 +144,6 @@ export class DeployCommand {
             new SlashCommandBuilder()
                 .setName('endtictactoe')
                 .setDescription('Dừng trận đấu Tic Tac Toe đang diễn ra'),
-<<<<<<< HEAD
-=======
 
             new SlashCommandBuilder()
                 .setName('tinhtuoi')
@@ -172,7 +160,6 @@ export class DeployCommand {
                     option.setName('user')
                         .setDescription('Chọn người bạn muốn gửi Donut🍩')
                         .setRequired(false)),
->>>>>>> HBC
         ].map(command => command.toJSON());
     }
 

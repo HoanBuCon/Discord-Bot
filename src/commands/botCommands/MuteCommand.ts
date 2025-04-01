@@ -22,11 +22,7 @@ export class MuteCommand extends Command {
 
         if (!guild || !member) {
             if (interactionOrMessage instanceof ChatInputCommandInteraction)
-<<<<<<< HEAD
-                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
-=======
                 await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
->>>>>>> HBC
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
@@ -90,16 +86,6 @@ export class MuteCommand extends Command {
                 const replyMessage = await interactionOrMessage.reply({ content: `✅ Đã Mute ${targetUser} vĩnh viễn! 🔇` });
                 console.log(`✅ Đã Mute ${targetUser.tag} tại server ${guild.name}`);
 
-<<<<<<< HEAD
-            // Luu ID tin nhan
-            if (interactionOrMessage instanceof ChatInputCommandInteraction) {
-                const fetchedReply = await interactionOrMessage.fetchReply();
-                replyMessageId = fetchedReply.id;
-                replyChannelId = interactionOrMessage.channelId;
-            } else if (interactionOrMessage instanceof Message) {
-                replyMessageId = replyMessage.id;
-                replyChannelId = interactionOrMessage.channel.id;
-=======
                 if (interactionOrMessage instanceof ChatInputCommandInteraction) {
                     const fetchedReply = await interactionOrMessage.fetchReply();
                     replyMessageId = fetchedReply.id;
@@ -132,7 +118,6 @@ export class MuteCommand extends Command {
                 setTimeout(async () => {
                     await UnmuteService.unmuteUser(interactionOrMessage.client as Client, targetMember.id, guild.id);
                 }, duration * 60 * 1000);
->>>>>>> HBC
             }
         } catch (error) {
             console.error('Lỗi khi mute:', error);
@@ -164,20 +149,11 @@ export class MuteCommand extends Command {
                 case 'd': return value * 24 * 60;
             }
         }
-<<<<<<< HEAD
-    
-=======
-
->>>>>>> HBC
         return 15; // Mac dinh Ban 15 phut neu input khong hop le
     }
 
     // Phuong thuc lay role "Muted" va chuan hoa ve lowerCase
-<<<<<<< HEAD
-    private async getMuteRole(guild: Guild): Promise<Role | null> {
-=======
     async getMuteRole(guild: Guild): Promise<Role | null> {
->>>>>>> HBC
         const muteRole = guild.roles.cache.find(role => role.name.toLowerCase() === 'muted');
         return muteRole || null;
     }

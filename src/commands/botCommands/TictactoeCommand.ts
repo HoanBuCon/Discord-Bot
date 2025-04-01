@@ -29,11 +29,7 @@ export class TictactoeCommand extends Command {
 
         if (!guild || !member) {
             if (interactionOrMessage instanceof ChatInputCommandInteraction)
-<<<<<<< HEAD
-                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
-=======
                 await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
->>>>>>> HBC
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
@@ -76,11 +72,7 @@ export class TictactoeCommand extends Command {
                 boardSize = 5;
             }
         
-<<<<<<< HEAD
-            const gameInstance = new TictactoeGameplay(authorPlayer.id, targetPlayer.id, guild.id, interactionOrMessage.id, interactionOrMessage.channelId, boardSize);
-=======
             const gameInstance = new TictactoeGameplay(authorPlayer.id, targetPlayer.id, guild.id, interactionOrMessage.id, interactionOrMessage.channelId, authorPlayer.tag, targetPlayer.tag, boardSize);
->>>>>>> HBC
             const initialBoard = gameInstance.getInitialBoard();
             const replyMessage = await interactionOrMessage.reply({ content: `✅ Bắt đầu Minigame Tic Tac Toe!\n${initialBoard}\nĐến lượt <@${authorPlayer.id}>!` });
             console.log(`✅ Bắt đầu Minigame Tic Tac Toe tại server ${guild.name}`);
@@ -96,20 +88,13 @@ export class TictactoeCommand extends Command {
             }
         
             if (replyMessageId && replyChannelId) {
-<<<<<<< HEAD
-                TictactoeDataManager.saveTictactoeData(authorPlayer.id, targetPlayer.id, guild.id, replyMessageId, replyChannelId, boardSize);
-=======
                 TictactoeDataManager.saveTictactoeData(authorPlayer.id, targetPlayer.id, guild.id, replyMessageId, replyChannelId, authorPlayer.tag, targetPlayer.tag, boardSize);
->>>>>>> HBC
                 TictactoeDataManager.saveGameplayInstance(gameInstance, guild.id);
             }
         } catch (error) {
             console.error(`Lỗi khi bắt đầu Minigame:`, error);
             await interactionOrMessage.reply({ content: `🚫 Không thể bắt đầu Minigame Tic Tac Toe!` });
-<<<<<<< HEAD
-=======
             throw error;
->>>>>>> HBC
         }
         
     }
