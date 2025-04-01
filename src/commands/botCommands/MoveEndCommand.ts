@@ -10,13 +10,8 @@ export class MoveCommand extends Command {
     async execute(interactionOrMessage: ChatInputCommandInteraction | Message, args?: string[]): Promise<void> {
         const guild = interactionOrMessage.guild;
         let member: GuildMember | null;
-<<<<<<< HEAD
-        let x: number;
-        let y: number;
-=======
         let x: number; // Cot
         let y: number; // Hang
->>>>>>> HBC
 
         // Xac dinh doi tuong thuc thi lenh
         if (interactionOrMessage instanceof Message)
@@ -26,11 +21,7 @@ export class MoveCommand extends Command {
 
         if (!guild || !member) {
             if (interactionOrMessage instanceof ChatInputCommandInteraction)
-<<<<<<< HEAD
-                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
-=======
                 await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
->>>>>>> HBC
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;
@@ -39,11 +30,7 @@ export class MoveCommand extends Command {
          
         if (interactionOrMessage instanceof Message) { // Neu la lenh Prefix
             if (!args || args.length < 2) {
-<<<<<<< HEAD
-                await interactionOrMessage.reply({ content: '⚠️ Hãy nhập nước đi theo prefix `69!move x y`' });
-=======
                 await interactionOrMessage.reply({ content: '⚠️ Hãy nhập nước đi theo prefix `69!move x y` hoặc slash `/move x y`' });
->>>>>>> HBC
                 return;
             }
             x = parseInt(args[0]);
@@ -129,11 +116,7 @@ export class EndTicTacToeCommand extends Command {
 
         if (!guild || !member) {
             if (interactionOrMessage instanceof ChatInputCommandInteraction)
-<<<<<<< HEAD
-                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
-=======
                 await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
->>>>>>> HBC
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;

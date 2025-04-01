@@ -22,11 +22,7 @@ export class MmbCommand extends Command {
 
         if (!guild || !member) {
             if (interactionOrMessage instanceof ChatInputCommandInteraction)
-<<<<<<< HEAD
-                await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', ephemeral: true });
-=======
                 await interactionOrMessage.reply({ content: '⚠️ Lệnh này chỉ hoạt động trong server.', flags: 64 });
->>>>>>> HBC
             else
                 await interactionOrMessage.reply('⚠️ Lệnh này chỉ hoạt động trong server.');
             return;

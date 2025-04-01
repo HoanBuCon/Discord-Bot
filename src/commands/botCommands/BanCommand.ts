@@ -75,19 +75,6 @@ export class BanCommand extends Command {
             let replyMessageId: string | null = null;
             let replyChannelId: string | null = interactionOrMessage.channelId ?? null;
 
-<<<<<<< HEAD
-            const replyMessage = await interactionOrMessage.reply({ content: `✅ Đã Ban ${targetUser} trong **${duration}** phút! 🔒` });
-            console.log(`✅ Đã Ban ${targetUser.tag} tại server ${guild.name}`);
-
-            // Luu ID tin nhan
-            if (interactionOrMessage instanceof ChatInputCommandInteraction) {
-                const fetchedReply = await interactionOrMessage.fetchReply();
-                replyMessageId = fetchedReply.id;
-                replyChannelId = interactionOrMessage.channelId;
-            } else if (interactionOrMessage instanceof Message) {
-                replyMessageId = replyMessage.id;
-                replyChannelId = interactionOrMessage.channel.id;
-=======
             // Luu ID tin nhan
             if (duration ===  null) {
                 const replyMessage = await interactionOrMessage.reply({ content: `✅ Đã Ban ${targetUser} vĩnh viễn! 🔒` });
@@ -125,7 +112,6 @@ export class BanCommand extends Command {
                 setTimeout(async () => {
                     await UnbanService.unbanUser(interactionOrMessage.client as Client, targetUser.id, guild.id);
                 }, duration * 60 * 1000);
->>>>>>> HBC
             }
         } catch (error) {
             console.error('Lỗi khi ban:', error);
