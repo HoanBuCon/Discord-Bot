@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, Message } from 'discord.js';
-import type { ICommand } from '../interfaces/ICommand';
+import type { ICommand } from '../interfaces/ICommand.ts';
 
 export abstract class Command implements ICommand {
     protected name: string;

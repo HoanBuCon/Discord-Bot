@@ -1,9 +1,11 @@
-import { TictactoeGameplay } from './TictactoeGameplay';
-import type { TictactoeData } from '../interfaces/IBaseData';
-
+import { TictactoeGameplay } from './TictactoeGameplay.ts';
+import type { TictactoeData } from '../interfaces/IBaseData.ts';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const TICTACTOE_DATA_PATH = path.resolve(__dirname, '../commands/botCommands/dataFiles/commandData/tictactoeData.json');
 
 export class TictactoeDataManager {

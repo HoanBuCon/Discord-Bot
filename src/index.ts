@@ -1,12 +1,12 @@
 import { Client, GatewayIntentBits, ActivityType } from 'discord.js';
 import dotenv from 'dotenv';
-import { CommandHandler } from './handlers/CommandHandler';
-import { PrefixHandler } from './handlers/PrefixHandler';
-import { SlashHandler } from './handlers/SlashHandler';
-import { UnmuteService } from './utils/UnmuteService';
-import { UnbanService } from './utils/UnbanService';
-import { DeployCommand } from './utils/DeployCommand';
-import { TictactoeDataManager } from './utils/TictactoeDataManager';
+import { CommandHandler } from './handlers/CommandHandler.ts';
+import { PrefixHandler } from './handlers/PrefixHandler.ts';
+import { SlashHandler } from './handlers/SlashHandler.ts';
+import { UnmuteService } from './utils/UnmuteService.ts';
+import { UnbanService } from './utils/UnbanService.ts';
+import { DeployCommand } from './utils/DeployCommand.ts';
+import { TictactoeDataManager } from './utils/TictactoeDataManager.ts';
 
 dotenv.config();
 

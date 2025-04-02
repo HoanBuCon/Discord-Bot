@@ -1,21 +1,21 @@
 import { ChatInputCommandInteraction, Message } from 'discord.js';
-import type { ICommand } from '../interfaces/ICommand';
-import { FileUtils } from '../utils/FileUtils';
-import { HelpCommand } from '../commands/botCommands/HelpCommand';
-import { SuaCommand } from '../commands/botCommands/SuaCommand';
-import { LiemCommand } from '../commands/botCommands/LiemCommand';
-import { MmbCommand } from '../commands/botCommands/MmbCommand';
-import { KickCommand } from '../commands/botCommands/KickCommand';
-import { BanCommand } from '../commands/botCommands/BanCommand';
-import { UnbanCommand } from '../commands/botCommands/UnbanCommand';
-import { MuteCommand } from '../commands/botCommands/MuteCommand';
-import { UnmuteCommand } from '../commands/botCommands/UnmuteCommand';
-import { TictactoeCommand } from '../commands/botCommands/TictactoeCommand';
-import { MoveCommand } from '../commands/botCommands/MoveEndCommand';
-import { EndTicTacToeCommand } from '../commands/botCommands/MoveEndCommand';
-import { TinhtuoiCommand } from '../commands/botCommands/TinhtuoiCommand';
-import { SaygexmemeCommand } from '../commands/botCommands/SaygexmemeCommand';
-import { DonutCommand } from '../commands/botCommands/DonutCommand';
+import type { ICommand } from '../interfaces/ICommand.ts';
+import { FileUtils } from '../utils/FileUtils.ts';
+import { HelpCommand } from '../commands/botCommands/HelpCommand.ts';
+import { SuaCommand } from '../commands/botCommands/SuaCommand.ts';
+import { LiemCommand } from '../commands/botCommands/LiemCommand.ts';
+import { MmbCommand } from '../commands/botCommands/MmbCommand.ts';
+import { KickCommand } from '../commands/botCommands/KickCommand.ts';
+import { BanCommand } from '../commands/botCommands/BanCommand.ts';
+import { UnbanCommand } from '../commands/botCommands/UnbanCommand.ts';
+import { MuteCommand } from '../commands/botCommands/MuteCommand.ts';
+import { UnmuteCommand } from '../commands/botCommands/UnmuteCommand.ts';
+import { TictactoeCommand } from '../commands/botCommands/TictactoeCommand.ts';
+import { MoveCommand } from '../commands/botCommands/MoveEndCommand.ts';
+import { EndTicTacToeCommand } from '../commands/botCommands/MoveEndCommand.ts';
+import { TinhtuoiCommand } from '../commands/botCommands/TinhtuoiCommand.ts';
+import { SaygexmemeCommand } from '../commands/botCommands/SaygexmemeCommand.ts';
+import { DonutCommand } from '../commands/botCommands/DonutCommand.ts';
 
 export class CommandHandler {
     private commands: Map<string, ICommand>;

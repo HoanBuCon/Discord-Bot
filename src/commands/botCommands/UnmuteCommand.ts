@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, Message, PermissionsBitField, GuildMember, Client } from 'discord.js';
-import { Command } from '../Command';
-import { MuteCommand } from './MuteCommand';
-import { PermissionUtils } from '../../utils/PermissionUtils';
-import { UnmuteService } from '../../utils/UnmuteService';
-import { MuteDataManager } from '../../utils/MuteDataManager';
+import { Command } from '../Command.ts';
+import { MuteCommand } from './MuteCommand.ts';
+import { PermissionUtils } from '../../utils/PermissionUtils.ts';
+import { UnmuteService } from '../../utils/UnmuteService.ts';
+import { MuteDataManager } from '../../utils/MuteDataManager.ts';
 
 export class UnmuteCommand extends Command {
     constructor() {

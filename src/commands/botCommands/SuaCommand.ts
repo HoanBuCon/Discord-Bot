@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, Message, GuildMember } from 'discord.js';
-import { Command } from '../Command';
-import { PermissionUtils } from '../../utils/PermissionUtils';
-import { FileUtils } from '../../utils/FileUtils';
+import { Command } from '../Command.ts';
+import { PermissionUtils } from '../../utils/PermissionUtils.ts';
+import { FileUtils } from '../../utils/FileUtils.ts';
 
 export class SuaCommand extends Command {
     constructor() {

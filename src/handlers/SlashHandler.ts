@@ -1,5 +1,5 @@
 import { Client, ChatInputCommandInteraction } from 'discord.js';
-import { CommandHandler } from './CommandHandler';
+import { CommandHandler } from './CommandHandler.ts';
 
 export class SlashHandler {
     private commandHandler: CommandHandler;

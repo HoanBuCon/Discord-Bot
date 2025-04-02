@@ -1,9 +1,12 @@
 import { Client } from 'discord.js';
-import type { MuteData } from '../interfaces/IBaseData';
-import { MuteCommand } from '../commands/botCommands/MuteCommand';
+import type { MuteData } from '../interfaces/IBaseData.ts';
+import { MuteCommand } from '../commands/botCommands/MuteCommand.ts';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const MUTED_USERS_PATH = path.resolve(__dirname, '../commands/botCommands/dataFiles/commandData/mutedUsers.json');
 
 export class MuteDataManager {

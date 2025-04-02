@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, Message, GuildMember } from 'discord.js';
-import { Command } from '../Command';
-import { FileUtils } from '../../utils/FileUtils';
+import { Command } from '../Command.ts';
+import { FileUtils } from '../../utils/FileUtils.ts';
 
 export class HelpCommand extends Command {
     constructor() {

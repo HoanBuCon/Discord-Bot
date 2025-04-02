@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, Message, PermissionsBitField, GuildMember, MessageFlags } from 'discord.js';
-import { Command } from '../Command';
-import { PermissionUtils } from '../../utils/PermissionUtils';
+import { Command } from '../Command.ts';
+import { PermissionUtils } from '../../utils/PermissionUtils.ts';
 
 export class KickCommand extends Command {
     constructor() {

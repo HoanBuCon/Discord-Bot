@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, Message, GuildMember } from 'discord.js';
-import { Command } from '../Command';
-import { PermissionUtils } from '../../utils/PermissionUtils';
-import { DonutAnimation } from '../../utils/DonutUtils';
+import { Command } from '../Command.ts';
+import { PermissionUtils } from '../../utils/PermissionUtils.ts';
+import { DonutAnimation } from '../../utils/DonutUtils.ts';
 
 export class DonutCommand extends Command {
     constructor() {
