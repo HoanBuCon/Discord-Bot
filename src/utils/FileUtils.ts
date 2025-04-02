@@ -2,6 +2,10 @@ import { Message, ChatInputCommandInteraction, MessageComponentInteraction, Moda
 import type { Interaction } from 'discord.js';
 import fs from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 interface MessageOptions {
     content?: string;
@@ -62,9 +66,9 @@ export class FileUtils {
                     await interactionOrMessage.reply({ content: customMessage || '', embeds: [embed], ephemeral: useEphemeral });
                 else
                     await this.reply(interactionOrMessage, customMessage || '', embed, useEphemeral);
-            } else
+            } else {
                 await this.followUp(interactionOrMessage, '', embed);
-
+            }
         }
     }
 
