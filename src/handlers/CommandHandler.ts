@@ -16,6 +16,7 @@ import { EndTicTacToeCommand } from '../commands/botCommands/MoveEndCommand.ts';
 import { TinhtuoiCommand } from '../commands/botCommands/TinhtuoiCommand.ts';
 import { SaygexmemeCommand } from '../commands/botCommands/SaygexmemeCommand.ts';
 import { DonutCommand } from '../commands/botCommands/DonutCommand.ts';
+import { ChatBotCommand, EndChatBotCommand } from '../commands/botCommands/ChatBotCommand.ts';
 
 export class CommandHandler {
     private commands: Map<string, ICommand>;
@@ -41,6 +42,8 @@ export class CommandHandler {
         this.registerCommand(new TinhtuoiCommand());
         this.registerCommand(new SaygexmemeCommand(), 'meme');
         this.registerCommand(new DonutCommand());
+        this.registerCommand(new ChatBotCommand());
+        this.registerCommand(new EndChatBotCommand());
     }
 
     private registerCommand(command: ICommand, alias?: string): void {

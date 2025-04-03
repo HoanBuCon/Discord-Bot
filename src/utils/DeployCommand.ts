@@ -160,6 +160,14 @@ export class DeployCommand {
                     option.setName('user')
                         .setDescription('Chọn người bạn muốn gửi Donut🍩')
                         .setRequired(false)),
+
+            new SlashCommandBuilder()
+                .setName('chatbot')
+                .setDescription('Bật tính năng ChatBot'),
+
+            new SlashCommandBuilder()
+                .setName('endchatbot')
+                .setDescription('Tắt tính năng ChatBot'),
         ].map(command => command.toJSON());
     }
 
