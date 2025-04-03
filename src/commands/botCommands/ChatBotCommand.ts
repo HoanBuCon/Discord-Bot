@@ -1,7 +1,6 @@
 import { ChatInputCommandInteraction, Message, GuildMember, TextChannel, Client } from 'discord.js';
-import { Command } from '../Command';
-import { PermissionUtils } from '../../utils/PermissionUtils';
-import { ChatBotService } from '../../utils/ChatBotService';
+import { Command } from '../Command.ts';
+import { ChatBotService } from '../../utils/ChatBotService.ts';
 
 export class ChatBotCommand extends Command {
     private chatbotService: ChatBotService;
