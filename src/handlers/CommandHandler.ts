@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, Message } from 'discord.js';
+import { ChatInputCommandInteraction, Message, Client } from 'discord.js';
 import type { ICommand } from '../interfaces/ICommand.ts';
 import { FileUtils } from '../utils/FileUtils.ts';
 import { HelpCommand } from '../commands/botCommands/HelpCommand.ts';
@@ -20,9 +20,11 @@ import { ChatBotCommand, EndChatBotCommand } from '../commands/botCommands/ChatB
 
 export class CommandHandler {
     private commands: Map<string, ICommand>;
+    private client: Client;
 
-    constructor() {
+    constructor(client: Client) {
         this.commands = new Map();
+        this.client = client;
         this.registerDefaultCommands();
     }
 
@@ -42,8 +44,8 @@ export class CommandHandler {
         this.registerCommand(new TinhtuoiCommand());
         this.registerCommand(new SaygexmemeCommand(), 'meme');
         this.registerCommand(new DonutCommand());
-        this.registerCommand(new ChatBotCommand());
-        this.registerCommand(new EndChatBotCommand());
+        this.registerCommand(new ChatBotCommand(this.client));
+        this.registerCommand(new EndChatBotCommand(this.client));
     }
 
     private registerCommand(command: ICommand, alias?: string): void {
