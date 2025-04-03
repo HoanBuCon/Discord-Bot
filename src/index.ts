@@ -26,7 +26,7 @@ const client = new Client({
 });
 
 const deployer = new DeployCommand();
-const commandHandler = new CommandHandler();
+const commandHandler = new CommandHandler(client);
 const prefixHandler = new PrefixHandler(commandHandler, '69!');
 const slashHandler = new SlashHandler(commandHandler);
 
@@ -43,8 +43,10 @@ client.once('ready', async () => {
     await UnmuteService.checkAndUnmuteUsers(client);
 });
 
-prefixHandler.initialize(client);
-slashHandler.initialize(client);
+client.on('ready', () => {
+    prefixHandler.initialize(client);
+    slashHandler.initialize(client);
+});
 
 client.on('error', (error) => {
     console.error('⚠️ Lỗi bot:', error);
