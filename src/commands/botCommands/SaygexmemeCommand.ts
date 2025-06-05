@@ -73,7 +73,8 @@ export class SaygexmemeCommand extends Command {
                 'ban_than_oi.mov': `# Duyen so sinh ra chung minh ${mentionText} 💖🤝`,
                 'happy_new_year.mov': `# Nam moi da den, an khang thinh vuong ${mentionText} 💖🧧`,
                 'excuse_me.mov': `# Cai deo gi co ${mentionText} ?`,
-                'buoi_trua.mov': `# Chuc ca nha buoi trua an lanh ${mentionText} 🌹💖`
+                'buoi_trua.mov': `# Chuc ca nha buoi trua an lanh ${mentionText} 🌹💖`,
+                'dusk_till_dawn.mov': `# Love you my best friend 💝🤝 ${mentionText}`
             };
             const title = titleMap[fileName] || `# im lang nao co be xam lul ${mentionText} 🤫🧏‍♂️🗿`;
             await FileUtils.sendMedia(interactionOrMessage, fileName, mediaDir, title);

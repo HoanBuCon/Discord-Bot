@@ -272,7 +272,7 @@ export class ChatBotService {
                 // Kiem tra API truoc khi goi
                 if (!await checkApiAvailability()) {
                     const randomResponse = DEFAULT_RESPONSES[Math.floor(Math.random() * DEFAULT_RESPONSES.length)];
-                    await message.reply(`${randomResponse}\n⚠️ API tạm thời không khả dụng (Admin hết tiền thuê model rồi)!`);
+                    await message.reply(`${randomResponse}\n⚠️ API tạm thời không khả dụng (Admin hết tiền thuê model)!`);
                     return;
                 }
 
@@ -495,7 +495,7 @@ export class ChatBotService {
             // Xu ly phan hoi
             let botResponse = response.generated_text.split('\n')[0].trim();
             botResponse = botResponse.replace(/^Assistant:\s*/, '');
-            botResponse = botResponse.replace(/anh em/g, 'em'); // Thay the "anh em" thành "em" (nghe horni hon)
+            botResponse = botResponse.replace(/anh em/g, 'em'); // Thay the "anh em" thanh "em" (nghe horni hon)
 
             // Cap nhat lich su voi phan hoi cua bot
             this.conversationHistory.get(userId)!.push({
