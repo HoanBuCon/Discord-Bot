@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction, Message, Client } from 'discord.js';
 import type { ICommand } from '../interfaces/ICommand.ts';
 import { FileUtils } from '../utils/FileUtils.ts';
 import { HelpCommand } from '../commands/botCommands/HelpCommand.ts';
+import { ServerinfoCommand } from '../commands/botCommands/ServerinfoCommand.ts';
 import { SuaCommand } from '../commands/botCommands/SuaCommand.ts';
 import { LiemCommand } from '../commands/botCommands/LiemCommand.ts';
 import { MmbCommand } from '../commands/botCommands/MmbCommand.ts';
@@ -30,6 +31,7 @@ export class CommandHandler {
 
     private registerDefaultCommands(): void {
         this.registerCommand(new HelpCommand());
+        this.registerCommand(new ServerinfoCommand());
         this.registerCommand(new SuaCommand());
         this.registerCommand(new LiemCommand(), 'liem');
         this.registerCommand(new MmbCommand(), 'mmb');

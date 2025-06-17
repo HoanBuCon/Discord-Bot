@@ -23,6 +23,10 @@ export class DeployCommand {
             new SlashCommandBuilder()
                 .setName('help')
                 .setDescription('Hiển thị danh sách các lệnh'),
+            
+            new SlashCommandBuilder()
+                .setName('server')
+                .setDescription('Hiển thị thông tin máy chủ'),
 
             new SlashCommandBuilder()
                 .setName('sua')

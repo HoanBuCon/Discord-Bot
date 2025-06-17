@@ -7,6 +7,7 @@
 # II. DANH SÁCH CÁC LỆNH
 ## 1. Lệnh Tiện Ích
 - **`/help`**: Hiển thị hướng dẫn sử dụng Bot
+- **`/server`**: Hiển thị thông tin máy chủ
 - **`/sua`**: Phản dmg con doggo vừa cắn bạn 🐧
 - **`/ongliem`**: Hỏi một người nào đó về ông Liêm
 - **`/memaybeo`**: Dùng khi có thằng chửi mẹ bạn 🐧
