@@ -1,32 +1,37 @@
-import { ChatInputCommandInteraction, Message } from 'discord.js';
-import type { ICommand } from '../interfaces/ICommand';
-import { FileUtils } from '../utils/FileUtils';
-import { HelpCommand } from '../commands/botCommands/HelpCommand';
-import { SuaCommand } from '../commands/botCommands/SuaCommand';
-import { LiemCommand } from '../commands/botCommands/LiemCommand';
-import { MmbCommand } from '../commands/botCommands/MmbCommand';
-import { KickCommand } from '../commands/botCommands/KickCommand';
-import { BanCommand } from '../commands/botCommands/BanCommand';
-import { UnbanCommand } from '../commands/botCommands/UnbanCommand';
-import { MuteCommand } from '../commands/botCommands/MuteCommand';
-import { UnmuteCommand } from '../commands/botCommands/UnmuteCommand';
-import { TictactoeCommand } from '../commands/botCommands/TictactoeCommand';
-import { MoveCommand } from '../commands/botCommands/MoveEndCommand';
-import { EndTicTacToeCommand } from '../commands/botCommands/MoveEndCommand';
-import { TinhtuoiCommand } from '../commands/botCommands/TinhtuoiCommand';
-import { SaygexmemeCommand } from '../commands/botCommands/SaygexmemeCommand';
-import { DonutCommand } from '../commands/botCommands/DonutCommand';
+import { ChatInputCommandInteraction, Message, Client } from 'discord.js';
+import type { ICommand } from '../interfaces/ICommand.ts';
+import { FileUtils } from '../utils/FileUtils.ts';
+import { HelpCommand } from '../commands/botCommands/HelpCommand.ts';
+import { ServerinfoCommand } from '../commands/botCommands/ServerinfoCommand.ts';
+import { SuaCommand } from '../commands/botCommands/SuaCommand.ts';
+import { LiemCommand } from '../commands/botCommands/LiemCommand.ts';
+import { MmbCommand } from '../commands/botCommands/MmbCommand.ts';
+import { KickCommand } from '../commands/botCommands/KickCommand.ts';
+import { BanCommand } from '../commands/botCommands/BanCommand.ts';
+import { UnbanCommand } from '../commands/botCommands/UnbanCommand.ts';
+import { MuteCommand } from '../commands/botCommands/MuteCommand.ts';
+import { UnmuteCommand } from '../commands/botCommands/UnmuteCommand.ts';
+import { TictactoeCommand } from '../commands/botCommands/TictactoeCommand.ts';
+import { MoveCommand } from '../commands/botCommands/MoveEndCommand.ts';
+import { EndTicTacToeCommand } from '../commands/botCommands/MoveEndCommand.ts';
+import { TinhtuoiCommand } from '../commands/botCommands/TinhtuoiCommand.ts';
+import { SaygexmemeCommand } from '../commands/botCommands/SaygexmemeCommand.ts';
+import { DonutCommand } from '../commands/botCommands/DonutCommand.ts';
+import { ChatBotCommand, EndChatBotCommand } from '../commands/botCommands/ChatBotCommand.ts';
 
 export class CommandHandler {
     private commands: Map<string, ICommand>;
+    private client: Client;
 
-    constructor() {
+    constructor(client: Client) {
         this.commands = new Map();
+        this.client = client;
         this.registerDefaultCommands();
     }
 
     private registerDefaultCommands(): void {
         this.registerCommand(new HelpCommand());
+        this.registerCommand(new ServerinfoCommand());
         this.registerCommand(new SuaCommand());
         this.registerCommand(new LiemCommand(), 'liem');
         this.registerCommand(new MmbCommand(), 'mmb');
@@ -41,6 +46,8 @@ export class CommandHandler {
         this.registerCommand(new TinhtuoiCommand());
         this.registerCommand(new SaygexmemeCommand(), 'meme');
         this.registerCommand(new DonutCommand());
+        this.registerCommand(new ChatBotCommand(this.client));
+        this.registerCommand(new EndChatBotCommand(this.client));
     }
 
     private registerCommand(command: ICommand, alias?: string): void {

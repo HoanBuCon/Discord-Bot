@@ -7,12 +7,15 @@
 # II. DANH SÁCH CÁC LỆNH
 ## 1. Lệnh Tiện Ích
 - **`/help`**: Hiển thị hướng dẫn sử dụng Bot
+- **`/server`**: Hiển thị thông tin máy chủ
 - **`/sua`**: Phản dmg con doggo vừa cắn bạn 🐧
 - **`/ongliem`**: Hỏi một người nào đó về ông Liêm
 - **`/memaybeo`**: Dùng khi có thằng chửi mẹ bạn 🐧
 - **`/saygex`**: Gửi meme mỹ đen lắc đít chôl lầy 🐧
 - **`/tinhtuoi`**: Máy tính tuổi thông minh
 - **`/donut`**: Gửi bánh Donut xoay tròn 🍩
+- **`/chatbot`**: Bật tính năng ChatBot 🤖
+- **`/endchatbot`**: Tắt tính năng ChatBot 🤖
 ## 2. Lệnh Quản Trị
 - **`/kick`**: Đuổi thành viên khỏi máy chủ
 - **`/ban`**: Cấm thành viên khỏi máy chủ

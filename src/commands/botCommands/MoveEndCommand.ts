@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, Message, GuildMember } from 'discord.js';
-import { Command } from '../Command';
-import { TictactoeDataManager } from '../../utils/TictactoeDataManager';
+import { Command } from '../Command.ts';
+import { TictactoeDataManager } from '../../utils/TictactoeDataManager.ts';
 
 export class MoveCommand extends Command {
     constructor() {

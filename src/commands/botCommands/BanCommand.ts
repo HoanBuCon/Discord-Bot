@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction, Message, PermissionsBitField, GuildMember, Client } from 'discord.js';
-import { Command } from '../Command';
-import { PermissionUtils } from '../../utils/PermissionUtils';
-import { BanDataManager } from '../../utils/BanDataManager';
-import { UnbanService } from '../../utils/UnbanService';
+import { Command } from '../Command.ts';
+import { PermissionUtils } from '../../utils/PermissionUtils.ts';
+import { BanDataManager } from '../../utils/BanDataManager.ts';
+import { UnbanService } from '../../utils/UnbanService.ts';
 
 export class BanCommand extends Command {
     constructor() {

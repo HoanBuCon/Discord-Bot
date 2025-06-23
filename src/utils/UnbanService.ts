@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, Client, TextChannel, EmbedBuilder, Guild } from 'discord.js';
-import { BanDataManager } from './BanDataManager';
-import type { BanData } from '../interfaces/IBaseData';
+import { BanDataManager } from './BanDataManager.ts';
+import type { BanData } from '../interfaces/IBaseData.ts';
 
 export class UnbanService {
     static async checkAndUnbanUsers(client: Client): Promise<void> {

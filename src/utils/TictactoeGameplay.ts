@@ -1,5 +1,5 @@
 import { Message, TextChannel } from 'discord.js';
-import { TictactoeDataManager } from './TictactoeDataManager';
+import { TictactoeDataManager } from './TictactoeDataManager.ts';
 import { Client } from 'discord.js';
 
 export class TictactoeGameplay {

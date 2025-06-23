@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, Message, GuildMember } from 'discord.js';
-import { Command } from '../Command';
-import { FileUtils } from '../../utils/FileUtils';
-import { PermissionUtils } from '../../utils/PermissionUtils';
+import { Command } from '../Command.ts';
+import { FileUtils } from '../../utils/FileUtils.ts';
+import { PermissionUtils } from '../../utils/PermissionUtils.ts';
 
 export class MmbCommand extends Command {
     constructor() {

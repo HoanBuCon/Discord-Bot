@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction, Message, PermissionsBitField, GuildMember, Client } from 'discord.js';
-import { Command } from '../Command';
-import { PermissionUtils } from '../../utils/PermissionUtils';
-import { TictactoeDataManager } from '../../utils/TictactoeDataManager';
-import { TictactoeGameplay } from '../../utils/TictactoeGameplay';
+import { Command } from '../Command.ts';
+import { PermissionUtils } from '../../utils/PermissionUtils.ts';
+import { TictactoeDataManager } from '../../utils/TictactoeDataManager.ts';
+import { TictactoeGameplay } from '../../utils/TictactoeGameplay.ts';
 
 export class TictactoeCommand extends Command {
     constructor() {

@@ -1,5 +1,5 @@
 import { Client, Events } from 'discord.js';
-import { CommandHandler } from './CommandHandler';
+import { CommandHandler } from './CommandHandler.ts';
 
 export class PrefixHandler {
     private commandHandler: CommandHandler;

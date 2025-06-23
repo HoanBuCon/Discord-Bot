@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, Message, GuildMember, EmbedBuilder, ComponentType, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageComponentInteraction } from 'discord.js';
-import { Command } from '../Command';
-import { PermissionUtils } from '../../utils/PermissionUtils';
+import { Command } from '../Command.ts';
+import { PermissionUtils } from '../../utils/PermissionUtils.ts';
 
 export class LiemCommand extends Command {
     constructor() {

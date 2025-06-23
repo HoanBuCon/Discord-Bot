@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, Message, GuildMember, EmbedBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ModalSubmitInteraction, ButtonBuilder, ButtonStyle, ButtonInteraction, ComponentType, MessageComponentInteraction, Embed } from 'discord.js';
 import { User, type CollectorFilter } from 'discord.js';
-import { Command } from '../Command';
-import { PermissionUtils } from '../../utils/PermissionUtils';
+import { Command } from '../Command.ts';
+import { PermissionUtils } from '../../utils/PermissionUtils.ts';
 
 export class TinhtuoiCommand extends Command {
     constructor() {

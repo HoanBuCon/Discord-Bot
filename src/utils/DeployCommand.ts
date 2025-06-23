@@ -23,6 +23,10 @@ export class DeployCommand {
             new SlashCommandBuilder()
                 .setName('help')
                 .setDescription('Hiển thị danh sách các lệnh'),
+            
+            new SlashCommandBuilder()
+                .setName('server')
+                .setDescription('Hiển thị thông tin máy chủ'),
 
             new SlashCommandBuilder()
                 .setName('sua')
@@ -160,6 +164,14 @@ export class DeployCommand {
                     option.setName('user')
                         .setDescription('Chọn người bạn muốn gửi Donut🍩')
                         .setRequired(false)),
+
+            new SlashCommandBuilder()
+                .setName('chatbot')
+                .setDescription('Bật tính năng ChatBot'),
+
+            new SlashCommandBuilder()
+                .setName('endchatbot')
+                .setDescription('Tắt tính năng ChatBot'),
         ].map(command => command.toJSON());
     }
 

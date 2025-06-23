@@ -21,6 +21,10 @@
 ### 1.6. **`/donut`**
 - Cấu trúc lệnh: `/donut <@user>` *(Gửi Donut cho người được chọn)*
 - Cấu trúc lệnh tự tặng Donut cho mình: `/donut` *(không cần thêm user, bot sẽ gửi cho mình)*
+### 1.7. **`/chatbot`**
+- Cấu trúc lệnh: `/chatbot`
+### 1.8. **`/endchatbot`**
+- Cấu trúc lệnh: `/endchatbot`
 ## 2. Lệnh Quản Trị
 ### 2.1. **`/kick`**
 - Cấu trúc lệnh: `/kick <@user>`
