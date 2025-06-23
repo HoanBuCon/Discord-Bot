@@ -1,9 +1,9 @@
 # Discord Bot by HoanBuCon
 
 ## Introduction
-This is the first project by **Hoàn Bự Con** and **The Peak aka Hoàng An Xây Ghét** 🐧.  
-What features does this bot have? **Absolutely nothing!** (It's totally useless 🗣️🔥).  
-
+- his is the first project by **Hoàn Bự Con** and **The Peak aka Hoàng An Xây Ghét** 🐧.  
+- What features does this bot have? **Absolutely nothing!** *(It's totally useless 🗣️🔥)*.  
+- My Discord Server: <a href="https://discord.gg/https://discord.gg/nckzdQE73u" target="_blank"><img align="center" src="https://upload.wikimedia.org/wikipedia/fr/4/4f/Discord_Logo_sans_texte.svg" alt="https://discord.gg/nckzdQE73u" height="30" width="40" /></a>
 ## 1️⃣ Prerequisites
 - **[Bun](https://bun.sh/)**  
 - **[Discord.js](https://discord.js.org/)**  
