@@ -2,10 +2,6 @@ import { ChatInputCommandInteraction, Client, GuildMember, TextChannel, EmbedBui
 import { MuteDataManager } from './MuteDataManager.ts';
 import { MuteCommand } from '../commands/botCommands/MuteCommand.ts';
 import type { MuteData } from '../interfaces/IBaseData.ts';
-import { ChatInputCommandInteraction, Client, GuildMember, TextChannel, EmbedBuilder, Guild } from 'discord.js';
-import { MuteDataManager } from './MuteDataManager';
-import { MuteCommand } from '../commands/botCommands/MuteCommand';
-import type { MuteData } from '../interfaces/IBaseData';
 
 export class UnmuteService {
     static async checkAndUnmuteUsers(client: Client): Promise<void> {
